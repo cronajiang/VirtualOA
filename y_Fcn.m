@@ -18,7 +18,7 @@ ac_H2O_bulk = x(3);
 ac_Lipid_bulk = x(4);
 oxy = x(5);
 b = x(6);
-num_probes = paras.numProbe;
+num_lasers = paras.numLaser;
 % noiselevel = paras.noiselevel*0.01;
 num_wav = 27;
 wav = linspace(650,910,num_wav);
@@ -31,23 +31,23 @@ for ii = 1:num_wav
     mu_eff_bulk(ii) = sqrt(3* mua_bulk_witha(ii)* mus_bulk_noa(ii));
 end
 
-%%%% probe loop
+%%%% Laser loop
 
 % scale the signal to the mean value
-for jj  = 1:num_probes
+for jj  = 1:num_lasers
     for ii = 1:num_wav
     G(jj, ii) = Green_semi(mu_eff_bulk(ii), paras.P(jj).rl, paras.P(jj).rb);
     H(jj, ii) = G(jj, ii) * mua_vessel(ii);
     end
 end
 
-for jj = 1: num_probes
+for jj = 1: num_lasers
     F(num_wav * (jj-1)+1: num_wav*jj) = H(jj,:)./mean(H(jj,:));
 end
 
 if isfield(paras, 'NoiseLevel')
     %         % generate noisy result
-        noise =paras.NoiseLevel .*F.*2.*(0.5-rand(1,num_probes * num_wav));
+        noise =paras.NoiseLevel .*F.*2.*(0.5-rand(1,num_lasers * num_wav));
         F = F + noise;
 end
 if isfield(paras, 'fac_scl')

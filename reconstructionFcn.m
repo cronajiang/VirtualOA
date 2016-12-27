@@ -36,20 +36,20 @@ function x = reconstructionFcn(paras, rDataNoise)
 
     vessel.r = paras.vesselpos(1,1);
     vessel.z = paras.vesselpos(1,2);
-    probe1.r = paras.probepos(1,1);
-    probe1.z = paras.probepos(1,2);
-    num_probes = paras.numProbes;
-    allProbes_r = probe1.r;
-    extraPara.numProbe = num_probes;
-    if num_probes > 1
-        probe2.r = paras.probepos(2,1);
-        probe2.z = paras.probepos(2,1);
-        allProbes_r = linspace(probe1.r, probe2.r, num_probes);
+    laser1.r = paras.laserpos(1,1);
+    laser1.z = paras.laserpos(1,2);
+    num_lasers = paras.numLasers;
+    allLasers_r = laser1.r;
+    extraPara.numLaser = num_lasers;
+    if num_lasers > 1
+        laser2.r = paras.laserpos(2,1);
+        laser2.z = paras.laserpos(2,1);
+        allLasers_r = linspace(laser1.r, laser2.r, num_lasers);
     end  
-    for ii = 1: num_probes
-        Probe.z = 0;
-        Probe.r = allProbes_r(ii);
-        [extraPara.P(ii).rl, extraPara.P(ii).rb] =  dis_semiinfinite(vessel, Probe);
+    for ii = 1: num_lasers
+        Laser.z = 0;
+        Laser.r = allLasers_r(ii);
+        [extraPara.P(ii).rl, extraPara.P(ii).rb] =  dis_semiinfinite(vessel, Laser);
     end
     
     % factor of scaling

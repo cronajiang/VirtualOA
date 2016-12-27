@@ -13,8 +13,8 @@ function plot_fluence(paras)
  c_OHb_bulk = paras.COHb;
  c_H2O_bulk = paras.CH2O;
  c_Lipid_bulk = paras.CLipid;
- probe.r = paras.probepos(1,1);
- probe.z = paras.probepos(1,2);
+ laser.r = paras.laserpos(1,1);
+ laser.z = paras.laserpos(1,2);
  vessel.r = paras.vesselpos(1,1);
  vessel.z = paras.vesselpos(1,2);
     mua_vessel = get_mua_vessel(oxy, wav);
@@ -30,7 +30,7 @@ for zi = 0:60
     for ri = -45:45
         pBulk.z = zi;
         pBulk.r = ri;
-        [rl, rb] =  dis_semiinfinite(pBulk, probe); 
+        [rl, rb] =  dis_semiinfinite(pBulk, laser); 
         % debug
         if zi == 10&& ri ==0
             t=0;
@@ -63,7 +63,7 @@ for ii = 1: length(wav_high)
     mus_bulk = a.*(wav_high(ii)* 1e-3).^(-b);
     mua_bulk  = get_mua_bulk(c_HHb_bulk, c_OHb_bulk, c_H2O_bulk, c_Lipid_bulk, wav_high(ii));
     mu_eff_bulk  = sqrt(3* mua_bulk * mus_bulk );
-    [rl, rb] =  dis_semiinfinite(pHigh, probe); 
+    [rl, rb] =  dis_semiinfinite(pHigh, laser); 
     G_h(ii) = Green_semi(mu_eff_bulk, rl, rb); 
     F_h(ii) = log(G_h(ii))+A ;
 end
@@ -77,7 +77,7 @@ for ii = 1:length(wav_low)
     mus_bulk = a.*(wav_low(ii)* 1e-3).^(-b);
     mua_bulk  = get_mua_bulk(c_HHb_bulk, c_OHb_bulk, c_H2O_bulk,c_Lipid_bulk, wav_low(ii));
     mu_eff_bulk  = sqrt(3* mua_bulk * mus_bulk );
-    [rl, rb] =  dis_semiinfinite(pLow, probe); 
+    [rl, rb] =  dis_semiinfinite(pLow, laser); 
     G_l(ii) = Green_semi(mu_eff_bulk, rl, rb); 
     F_l(ii) = log(G_l(ii))+A ; 
 end

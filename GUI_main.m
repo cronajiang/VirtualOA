@@ -59,19 +59,19 @@ set(handles.P3,'Parent',handles.tab3,'Units','Normalized')
 
 %set( findall( hObject, '-property', 'Units' ), 'Units', 'Normalized' )
 % --------------  PARAMETERS ASSIGNMENT -------------------- % 
-% set number of probes and geo 
-handles.numProbes = 5;
-set(handles.editNumProbe, 'String', num2str(handles.numProbes))
+% set number of lasers and geo 
+handles.numLasers = 5;
+set(handles.editNumLaser, 'String', num2str(handles.numLasers))
 
 dis1 = 20;
 set(handles.editDis1, 'String', num2str(dis1))
 handles.Vessel.pos = [0,dis1];  
-handles.Probe1.pos = [0,0]; %(r,z) --> (x,y)
+handles.Laser1.pos = [0,0]; %(r,z) --> (x,y)
 dis2 = 40;
 set(handles.editDis2,'String', num2str(dis2));
-handles.Probe2.pos = [dis2,0];
+handles.Laser2.pos = [dis2,0];
 axes(handles.axesModel)
-plot_geo(handles.Vessel.pos, [ handles.Probe1.pos; handles.Probe2.pos], handles.numProbes);
+plot_geo(handles.Vessel.pos, [ handles.Laser1.pos; handles.Laser2.pos], handles.numLasers);
 
 % set wav for the plot_fluence
 set(handles.sliderWav ,'Value',700)
@@ -174,20 +174,20 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % ----------------  plot_geo START-----------------%
-handles.numProbes = str2double(get(handles.editNumProbe, 'String'));
-if handles.numProbes == 1
+handles.numLasers = str2double(get(handles.editNumLaser, 'String'));
+if handles.numLasers == 1
     dis1 = str2double(get(handles.editDis1, 'String'));
     handles.Vessel.pos = [0,dis1]; 
     axes(handles.axesModel)
-    plot_geo(handles.Vessel.pos, handles.Probe1.pos,1);
+    plot_geo(handles.Vessel.pos, handles.Laser1.pos,1);
 else
     dis1 = str2double(get(handles.editDis1, 'String'));
     handles.Vessel.pos = [0,dis1];  
-    % handles.Probe1.pos = [0,0]; %(r,z) --> (x,y)
+    % handles.Laser1.pos = [0,0]; %(r,z) --> (x,y)
     dis2 = str2double(get(handles.editDis2,'String'));
-    handles.Probe2.pos = [dis2,0];
+    handles.Laser2.pos = [dis2,0];
     axes(handles.axesModel)
-    plot_geo(handles.Vessel.pos, [ handles.Probe1.pos; handles.Probe2.pos], handles.numProbes);
+    plot_geo(handles.Vessel.pos, [ handles.Laser1.pos; handles.Laser2.pos], handles.numLasers);
 
 end
 % ----------------  plot_geo END-----------------%
@@ -214,8 +214,8 @@ if get(handles.radiobuttonSingleForward,'Value') == 1
         handles.NoiseLevel = 0.1;
     end
     handles.ref.vesselpos = handles.Vessel.pos;
-    handles.ref.probepos = [handles.Probe1.pos ; handles.Probe2.pos]; %(r,z) --> (x,y)
-    handles.ref.numProbes = handles.numProbes;
+    handles.ref.laserpos = [handles.Laser1.pos ; handles.Laser2.pos]; %(r,z) --> (x,y)
+    handles.ref.numLasers = handles.numLasers;
     % --------------  PARAMETERS ASSIGNMENT END ---------------- % 
     
 %     % ----loop over wavs to find the max and min fluence and  mua_vessel ---%
@@ -294,8 +294,8 @@ elseif get(handles.radiobuttonContForward,'Value') == 1
     handles.cont.b = get(handles.sliderb, 'Value');
 
     handles.cont.vesselpos = handles.Vessel.pos;
-    handles.cont.probepos = [handles.Probe1.pos ; handles.Probe2.pos]; %(r,z) --> (x,y)
-    handles.cont.numProbes = handles.numProbes;
+    handles.cont.laserpos = [handles.Laser1.pos ; handles.Laser2.pos]; %(r,z) --> (x,y)
+    handles.cont.numLasers = handles.numLasers;
     % --------------  PARAMETERS ASSIGNMENT END ---------------- % 
     % ----------------- plot fluence START ------------------%
     if get(handles.radiobuttonPlotFluence, 'Value') == 1
@@ -351,8 +351,8 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
     handles.init.b = str2double(get(handles.editbInit, 'String'));
  
     handles.init.vesselpos = handles.Vessel.pos;
-    handles.init.probepos = [handles.Probe1.pos ; handles.Probe2.pos]; %(r,z) --> (x,y)
-    handles.init.numProbes = handles.numProbes;
+    handles.init.laserpos = [handles.Laser1.pos ; handles.Laser2.pos]; %(r,z) --> (x,y)
+    handles.init.numLasers = handles.numLasers;
     
     handles.init.StOv_range = handles.StOv_range;
     handles.init.TCHb_range = handles.TCHb_range;
@@ -371,13 +371,13 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
     % --------------- FOrward for init end ----------------------%
     
     % ----------------- RECONSTRUCTION START ------------------- %
-%    if isfield(handles, 'ref')
-   try handles.ref
+   if isfield(handles, 'ref')
+  
       % get scaling factor 
-            if handles.numProbes > 1
+            if handles.numLasers > 1
                 numWav = 27;    
                 factor_scl = ones(1,numWav).*mean(handles.ref.ForwardResult(1:numWav));
-                for jj = 2:handles.numProbes
+                for jj = 2:handles.numLasers
                      
                     factor_scl((jj - 1)* numWav  + 1 :jj * numWav  ) = ...
                     ones(1,numWav ) .* ...
@@ -401,7 +401,7 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
     handles.rec.StOb = handles.rec.COHb/ (handles.rec.COHb + handles.rec.CHHb);
     
 
-   catch
+   else
 %        errorMSG = 'please generate reference forward result first before reconstruction !';
 %        error(errorMSG)
         msgbox('Oops! No reference data available. Could you generate forward result first, please?');
@@ -465,8 +465,8 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
        % display forward result for reconstructed values
        % --------------  PARAMETERS ASSIGNMENT -------------------- % 
        handles.rec.vesselpos = handles.Vessel.pos;
-       handles.rec.probepos = [handles.Probe1.pos ; handles.Probe2.pos]; %(r,z) --> (x,y)
-       handles.rec.numProbes = handles.numProbes;
+       handles.rec.laserpos = [handles.Laser1.pos ; handles.Laser2.pos]; %(r,z) --> (x,y)
+       handles.rec.numLasers = handles.numLasers;
        % --------------  PARAMETERS ASSIGNMENT END ---------------- % 
        % -----------------   Forward for rec Start ------------------- %
        handles.rec.RatioResult = forwardFcn(handles.rec);
@@ -547,8 +547,8 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.cont.b = get(handles.sliderb, 'Value');
 
     handles.cont.vesselpos = handles.Vessel.pos;
-    handles.cont.probepos = [handles.Probe1.pos ; handles.Probe2.pos]; %(r,z) --> (x,y)
-    handles.cont.numProbes = handles.numProbes;
+    handles.cont.laserpos = [handles.Laser1.pos ; handles.Laser2.pos]; %(r,z) --> (x,y)
+    handles.cont.numLasers = handles.numLasers;
     % --------------  PARAMETERS ASSIGNMENT END ---------------- % 
     % ----------------- plot fluence START ------------------%
     if get(handles.radiobuttonPlotFluence, 'Value') == 1
@@ -793,8 +793,8 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.cont.a = get(handles.slidera, 'Value');
     handles.cont.b = get(handles.sliderb, 'Value');
     handles.cont.vesselpos = handles.Vessel.pos;
-    handles.cont.probepos = [handles.Probe1.pos ; handles.Probe2.pos]; %(r,z) --> (x,y)
-    handles.cont.numProbes = handles.numProbes;
+    handles.cont.laserpos = [handles.Laser1.pos ; handles.Laser2.pos]; %(r,z) --> (x,y)
+    handles.cont.numLasers = handles.numLasers;
     % --------------  PARAMETERS ASSIGNMENT END ---------------- % 
     
     % ----------------- plot fluence START ------------------%
@@ -878,13 +878,13 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.cont.a = get(handles.slidera, 'Value');
     handles.cont.b = get(handles.sliderb, 'Value');
     handles.cont.vesselpos = handles.Vessel.pos;
-    handles.cont.numProbes = handles.numProbes;
-    if handles.numProbes == 1;
-        handles.cont.probepos = [handles.Probe1.pos] ;
+    handles.cont.numLasers = handles.numLasers;
+    if handles.numLasers == 1;
+        handles.cont.laserpos = [handles.Laser1.pos] ;
     else
-    handles.cont.probepos = [handles.Probe1.pos ; handles.Probe2.pos]; %(r,z) --> (x,y)
+    handles.cont.laserpos = [handles.Laser1.pos ; handles.Laser2.pos]; %(r,z) --> (x,y)
     end
-    handles.cont.numProbes = handles.numProbes;
+    handles.cont.numLasers = handles.numLasers;
     % --------------  PARAMETERS ASSIGNMENT END ---------------- % 
     
     % ----------------- plot fluence START ------------------%
@@ -1104,8 +1104,8 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.cont.a = get(handles.slidera, 'Value');
     handles.cont.b = get(handles.sliderb, 'Value');
     handles.cont.vesselpos = handles.Vessel.pos;
-    handles.cont.probepos = [handles.Probe1.pos ; handles.Probe2.pos]; %(r,z) --> (x,y)
-    handles.cont.numProbes = handles.numProbes;
+    handles.cont.laserpos = [handles.Laser1.pos ; handles.Laser2.pos]; %(r,z) --> (x,y)
+    handles.cont.numLasers = handles.numLasers;
     % --------------  PARAMETERS ASSIGNMENT END ---------------- % 
     
     % ----------------- plot fluence START ------------------%
@@ -1191,8 +1191,8 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.cont.b = get(handles.sliderb, 'Value');
 
     handles.cont.vesselpos = handles.Vessel.pos;
-    handles.cont.probepos = [handles.Probe1.pos ; handles.Probe2.pos]; %(r,z) --> (x,y)
-    handles.cont.numProbes = handles.numProbes;
+    handles.cont.laserpos = [handles.Laser1.pos ; handles.Laser2.pos]; %(r,z) --> (x,y)
+    handles.cont.numLasers = handles.numLasers;
     % --------------  PARAMETERS ASSIGNMENT END ---------------- % 
     
     % ----------------- plot fluence START ------------------%
@@ -1300,8 +1300,8 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.cont.b = get(handles.sliderb, 'Value');
 
     handles.cont.vesselpos = handles.Vessel.pos;
-    handles.cont.probepos = [handles.Probe1.pos ; handles.Probe2.pos]; %(r,z) --> (x,y)
-    handles.cont.numProbes = handles.numProbes;
+    handles.cont.laserpos = [handles.Laser1.pos ; handles.Laser2.pos]; %(r,z) --> (x,y)
+    handles.cont.numLasers = handles.numLasers;
     % --------------  PARAMETERS ASSIGNMENT END ---------------- % 
     
     % ----------------- plot fluence START ------------------%
@@ -1409,8 +1409,8 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.cont.b = get(handles.sliderb, 'Value');
 
     handles.cont.vesselpos = handles.Vessel.pos;
-    handles.cont.probepos = [handles.Probe1.pos ; handles.Probe2.pos]; %(r,z) --> (x,y)
-    handles.cont.numProbes = handles.numProbes;
+    handles.cont.laserpos = [handles.Laser1.pos ; handles.Laser2.pos]; %(r,z) --> (x,y)
+    handles.cont.numLasers = handles.numLasers;
     % --------------  PARAMETERS ASSIGNMENT END ---------------- % 
     
     % ----------------- plot fluence START ------------------%
@@ -1499,20 +1499,20 @@ function editDis1_Callback(hObject, eventdata, handles)
 
 
 % ----------------  plot_geo START-----------------%
-handles.numProbes = str2double(get(handles.editNumProbe, 'String'));
-if handles.numProbes == 1
+handles.numLasers = str2double(get(handles.editNumLaser, 'String'));
+if handles.numLasers == 1
     dis1 = str2double(get(handles.editDis1, 'String'));
     handles.Vessel.pos = [0,dis1]; 
     axes(handles.axesModel)
-    plot_geo(handles.Vessel.pos, handles.Probe1.pos,1);
+    plot_geo(handles.Vessel.pos, handles.Laser1.pos,1);
 else
     dis1 = str2double(get(handles.editDis1, 'String'));
     handles.Vessel.pos = [0,dis1];  
-    % handles.Probe1.pos = [0,0]; %(r,z) --> (x,y)
+    % handles.Laser1.pos = [0,0]; %(r,z) --> (x,y)
     dis2 = str2double(get(handles.editDis2,'String'));
-    handles.Probe2.pos = [dis2,0];
+    handles.Laser2.pos = [dis2,0];
     axes(handles.axesModel)
-    plot_geo(handles.Vessel.pos, [ handles.Probe1.pos; handles.Probe2.pos], handles.numProbes);
+    plot_geo(handles.Vessel.pos, [ handles.Laser1.pos; handles.Laser2.pos], handles.numLasers);
 
 end
 % ----------------  plot_geo END-----------------%
@@ -1541,20 +1541,20 @@ function editDis2_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of editDis2 as a double
 
 % ----------------  plot_geo START-----------------%
-handles.numProbes = str2double(get(handles.editNumProbe, 'String'));
-if handles.numProbes == 1
+handles.numLasers = str2double(get(handles.editNumLaser, 'String'));
+if handles.numLasers == 1
     dis1 = str2double(get(handles.editDis1, 'String'));
     handles.Vessel.pos = [0,dis1]; 
     axes(handles.axesModel)
-    plot_geo(handles.Vessel.pos, handles.Probe1.pos,1);
+    plot_geo(handles.Vessel.pos, handles.Laser1.pos,1);
 else
     dis1 = str2double(get(handles.editDis1, 'String'));
     handles.Vessel.pos = [0,dis1];  
-    % handles.Probe1.pos = [0,0]; %(r,z) --> (x,y)
+    % handles.Laser1.pos = [0,0]; %(r,z) --> (x,y)
     dis2 = str2double(get(handles.editDis2,'String'));
-    handles.Probe2.pos = [dis2,0];
+    handles.Laser2.pos = [dis2,0];
     axes(handles.axesModel)
-    plot_geo(handles.Vessel.pos, [ handles.Probe1.pos; handles.Probe2.pos], handles.numProbes);
+    plot_geo(handles.Vessel.pos, [ handles.Laser1.pos; handles.Laser2.pos], handles.numLasers);
 
 end
 % ----------------  plot_geo END-----------------%
@@ -1621,36 +1621,36 @@ end
 
 
 
-function editNumProbe_Callback(hObject, eventdata, handles)
-% hObject    handle to editNumProbe (see GCBO)
+function editNumLaser_Callback(hObject, eventdata, handles)
+% hObject    handle to editNumLaser (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of editNumProbe as text
-%        str2double(get(hObject,'String')) returns contents of editNumProbe as a double
+% Hints: get(hObject,'String') returns contents of editNumLaser as text
+%        str2double(get(hObject,'String')) returns contents of editNumLaser as a double
 % ----------------  plot_geo START-----------------%
-handles.numProbes = str2double(get(handles.editNumProbe, 'String'));
-if handles.numProbes == 1
+handles.numLasers = str2double(get(handles.editNumLaser, 'String'));
+if handles.numLasers == 1
     dis1 = str2double(get(handles.editDis1, 'String'));
     handles.Vessel.pos = [0,dis1]; 
     axes(handles.axesModel)
-    plot_geo(handles.Vessel.pos, handles.Probe1.pos,1);
+    plot_geo(handles.Vessel.pos, handles.Laser1.pos,1);
 else
     dis1 = str2double(get(handles.editDis1, 'String'));
     handles.Vessel.pos = [0,dis1];  
-    % handles.Probe1.pos = [0,0]; %(r,z) --> (x,y)
+    % handles.Laser1.pos = [0,0]; %(r,z) --> (x,y)
     dis2 = str2double(get(handles.editDis2,'String'));
-    handles.Probe2.pos = [dis2,0];
+    handles.Laser2.pos = [dis2,0];
     axes(handles.axesModel)
-    plot_geo(handles.Vessel.pos, [ handles.Probe1.pos; handles.Probe2.pos], handles.numProbes);
+    plot_geo(handles.Vessel.pos, [ handles.Laser1.pos; handles.Laser2.pos], handles.numLasers);
 
 end
 % ----------------  plot_geo END-----------------%
 guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
-function editNumProbe_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to editNumProbe (see GCBO)
+function editNumLaser_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editNumLaser (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -1702,8 +1702,8 @@ switch mode
     handles.cont.b = get(handles.sliderb, 'Value');
 
     handles.cont.vesselpos = handles.Vessel.pos;
-    handles.cont.probepos = [handles.Probe1.pos ; handles.Probe2.pos]; %(r,z) --> (x,y)
-    handles.cont.numProbes = handles.numProbes;
+    handles.cont.laserpos = [handles.Laser1.pos ; handles.Laser2.pos]; %(r,z) --> (x,y)
+    handles.cont.numLasers = handles.numLasers;
     % --------------  PARAMETERS ASSIGNMENT END ---------------- % 
    
     
@@ -3048,7 +3048,7 @@ h112 = uicontrol(...
 'Parent',h63,...
 'Units','pixels',...
 'Position', r.*  [210 98 140 30],...
-'String',{  'Distance 1 (probe 1 to vessel)'; '[0,60]' },...
+'String',{  'Distance 1 (laser 1 to vessel)'; '[0,60]' },...
 'Style','text',...
 'Tag','textDis1',...
 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
@@ -3061,7 +3061,7 @@ h113 = uicontrol(...
 'Parent',h63,...
 'Units','pixels',...
 'Position', r.*  [210 64 150 30],...
-'String',{  'Distance 2 (probe 1 to probe 2)'; '[-45, 45]' },...
+'String',{  'Distance 2 (laser 1 to laser 2)'; '[-45, 45]' },...
 'Style','text',...
 'Tag','textDis2',...
 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
@@ -3096,30 +3096,30 @@ h115 = uicontrol(...
 set(h115, 'Units', 'Normalized');
 
 appdata = [];
-appdata.lastValidTag = 'textNumProbe';
+appdata.lastValidTag = 'textNumLaser';
 
 h116 = uicontrol(...
 'Parent',h63,...
 'Units','pixels',...
 'Position', r.*  [210 128 120 20],...
-'String','Number of probes (>= 1)',...
+'String','Number of laser positions (>= 1)',...
 'Style','text',...
-'Tag','textNumProbe',...
+'Tag','textNumLaser',...
 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
 set(h116, 'Units', 'Normalized');
 
 appdata = [];
-appdata.lastValidTag = 'editNumProbe';
+appdata.lastValidTag = 'editNumLaser';
 
 h117 = uicontrol(...
 'Parent',h63,...
 'Units','pixels',...
-'Callback',@(hObject,eventdata)GUI_main('editNumProbe_Callback',hObject,eventdata,guidata(hObject)),...
+'Callback',@(hObject,eventdata)GUI_main('editNumLaser_Callback',hObject,eventdata,guidata(hObject)),...
 'Position', r.*  [372.5 135 40 20],...
 'String','2',...
 'Style','edit',...
-'CreateFcn', {@local_CreateFcn, @(hObject,eventdata)GUI_main('editNumProbe_CreateFcn',hObject,eventdata,guidata(hObject)), appdata} ,...
-'Tag','editNumProbe');
+'CreateFcn', {@local_CreateFcn, @(hObject,eventdata)GUI_main('editNumLaser_CreateFcn',hObject,eventdata,guidata(hObject)), appdata} ,...
+'Tag','editNumLaser');
 set(h117, 'Units', 'Normalized');
 
 appdata = [];

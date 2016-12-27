@@ -1,11 +1,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % function plot_ultra(paras)
-%   plot ultrasound signal levels for different locations of probes  
+%   plot ultrasound signal levels for different locations of lasers  
 %   input: paras
 %         
 %   author: jingjing Jiang  cronajiang@gmail.com
 %   created: 01.02.2016
-%   modified: 07.03.2016
+%   modified: 27.12.2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function plot_ultra(paras)
@@ -20,15 +20,15 @@ oxy=paras.StOv;
 b=paras.b;
 vessel.r = paras.vesselpos(1,1);
 vessel.z = paras.vesselpos(1,2);
-probe1.r = paras.probepos(1,1);
-probe1.z = paras.probepos(1,2);
-num_probes = paras.numProbes;
-allProbes_r = probe1.r;
+laser1.r = paras.laserpos(1,1);
+laser1.z = paras.laserpos(1,2);
+num_lasers = paras.numLasers;
+alllasers_r = laser1.r;
 
-if num_probes > 1
-    probe2.r = paras.probepos(2,1);
-    probe2.z = paras.probepos(2,1);
-    allProbes_r = linspace(probe1.r, probe2.r, num_probes);
+if num_lasers > 1
+    laser2.r = paras.laserpos(2,1);
+    laser2.z = paras.laserpos(2,1);
+    alllasers_r = linspace(laser1.r, laser2.r, num_lasers);
 end  
 %-------------------- parameter assignment END--------------------------%
 %------------------ calculate ultrasound signal level ------------------%
@@ -44,11 +44,11 @@ for ii = 1:num_wav
     mu_eff_bulk(ii) = sqrt(3* mua_bulk_witha(ii)* mus_bulk_noa(ii));
 end
 
-for jj = 1: num_probes
+for jj = 1: num_lasers
     for ii = 1:num_wav     
-    Probe.z = 0;
-    Probe.r = allProbes_r(jj);  
-    [rl, rb] =  dis_semiinfinite(vessel, Probe);
+    laser.z = 0;
+    laser.r = alllasers_r(jj);  
+    [rl, rb] =  dis_semiinfinite(vessel, laser);
      G(jj, ii) = Green_semi(mu_eff_bulk(ii), rl, rb);
      H(jj, ii) = G(jj,ii) * mua_vessel(ii);
     end
@@ -58,11 +58,11 @@ end
 COLORs = ['r','c','b','k','m' ,'y','g'];
 semilogy(wav, H(1,:)./H(1,1), COLORs(1))
 hold on
-str_legend(1) = {['D = ' num2str(sqrt(vessel.z^2 + allProbes_r(1)^2),4)]};
-if num_probes > 1
-    for jj = 2:num_probes
+str_legend(1) = {['D = ' num2str(sqrt(vessel.z^2 + alllasers_r(1)^2),4)]};
+if num_lasers > 1
+    for jj = 2:num_lasers
         semilogy(wav, H(jj,:)./H(1,1), COLORs(jj))
-        str_legend{jj} =  ['D = ' num2str(sqrt(vessel.z^2 + allProbes_r(jj)^2),4)];
+        str_legend{jj} =  ['D = ' num2str(sqrt(vessel.z^2 + alllasers_r(jj)^2),4)];
     end
 end
 legend(str_legend)

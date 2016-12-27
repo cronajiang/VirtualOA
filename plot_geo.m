@@ -1,18 +1,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plot_geo.m
 %   plot current model 
-%   input: vessel_pos, probe_pos,num_probes
+%   input: vessel_pos, laser_pos,num_lasers
 %         
 %   author: jingjing Jiang  cronajiang@gmail.com
 %   created: 01.02.2016
-%   modified: 07.03.2016
+%   modified: 27.12.2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function plot_geo(vessel_pos, probe_pos,num_probes)
+function plot_geo(vessel_pos, laser_pos,num_lasers)
 
 vessel.r = vessel_pos(1,1);
 vessel.z = vessel_pos(1,2);
-probe(1).r = probe_pos(1,1);
-probe(1).z = probe_pos(1,2);
+laser(1).r = laser_pos(1,1);
+laser(1).z = laser_pos(1,2);
 cla
 hold on
 set(gca,'Ydir','reverse')
@@ -27,7 +27,7 @@ rectangle('Position',[-45 0 90 60], 'FaceColor' ,[0.5 0.5 1])
 text(-15,40,'Bulk','HorizontalAlignment','right','Color','k')
 
 % draw distance
-draw_dis(probe(1),vessel)
+draw_dis(laser(1),vessel)
 
 % boundaries
 plot([bound.r(1):1:bound.r(2)],zeros(1,bound.r(2)-bound.r(1)+1), '-k');
@@ -36,28 +36,28 @@ plot([bound.r(1):1:bound.r(2)],zeros(1,bound.r(2)-bound.r(1)+1), '-k');
 plot(vessel.r,vessel.z, 'Marker', 'o','MarkerSize',8, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r')
 text(vessel.r+15,vessel.z+5,'Blood vessel','HorizontalAlignment','right','Color','k')
 str_coor = ['(' num2str(vessel.r) ',' num2str(vessel.z) ')'];
-text(probe(1).r+6,vessel.z+10,str_coor,'HorizontalAlignment','right','Color','k')
+text(laser(1).r+6,vessel.z+10,str_coor,'HorizontalAlignment','right','Color','k')
 
-%probe 1
-plot(probe(1).r,probe(1).z, 'Marker', 'o','MarkerSize',6, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'k')
-text(probe(1).r+6,probe(1).z-7,'Probe 1','HorizontalAlignment','right','Color','k')
-str_coor = ['(' num2str(probe(1).r) ',' num2str(probe(1).z) ')'];
-text(probe(1).r+2,probe(1).z-3,str_coor,'HorizontalAlignment','right','Color','k')
+%laser 1
+plot(laser(1).r,laser(1).z, 'Marker', 'o','MarkerSize',7, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'y')
+text(laser(1).r+6,laser(1).z-7,'laser 1 (and probe)','HorizontalAlignment','right','Color','k')
+str_coor = ['(' num2str(laser(1).r) ',' num2str(laser(1).z) ')'];
+text(laser(1).r+2,laser(1).z-3,str_coor,'HorizontalAlignment','right','Color','k')
 
 
-if num_probes > 1
-    probe(2).r = probe_pos(2,1);
-    probe(2).z =probe_pos(2,2);  
+if num_lasers > 1
+    laser(2).r = laser_pos(2,1);
+    laser(2).z =laser_pos(2,2);  
     % draw distance
-    draw_dis(probe(2),vessel)
-    plot(probe(2).r,probe(2).z, 'Marker', 'o','MarkerSize',6, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'k')
-    text(probe(2).r+6,probe(2).z - 7,'Probe 2','HorizontalAlignment','right','Color','k')
-    str_coor = ['(' num2str(probe(2).r) ',' num2str(probe(2).z) ')'];
-    text(probe(2).r+6,probe(2).z-3,str_coor,'HorizontalAlignment','right','Color','k')
+    draw_dis(laser(2),vessel)
+    plot(laser(2).r,laser(2).z, 'Marker', 'o','MarkerSize',6, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'k')
+    text(laser(2).r+6,laser(2).z - 7,'laser 2','HorizontalAlignment','right','Color','k')
+    str_coor = ['(' num2str(laser(2).r) ',' num2str(laser(2).z) ')'];
+    text(laser(2).r+6,laser(2).z-3,str_coor,'HorizontalAlignment','right','Color','k')
 end   
-if num_probes>2
-allProbes_r = linspace(probe(1).r, probe(2).r, num_probes);
-plot(allProbes_r(2:end-1),0,'Marker', 'o','MarkerSize',5, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'k')
+if num_lasers>2
+allLasers_r = linspace(laser(1).r, laser(2).r, num_lasers);
+plot(allLasers_r(2:end-1),0,'Marker', 'o','MarkerSize',5, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'k')
 end
  
 % draw distance
