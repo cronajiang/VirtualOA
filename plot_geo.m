@@ -75,6 +75,6 @@ else
     plot(x, y, '-','LineWidth',1)
 end
 
-text((x1+x2)/2,(y1+y2)/2,num2str(dis),'HorizontalAlignment','left','Color','b')
+text((x1+x2)/2,(y1+y2)/2,['D = ' num2str(dis,4)],'HorizontalAlignment','left','Color','b')
 axis on
  

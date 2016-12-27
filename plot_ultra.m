@@ -9,7 +9,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function plot_ultra(paras)
-
+cla
 %-------------------- parameter assignment --------------------------%
 a=paras.a;
 ac_HHb_bulk = a* paras.CHHb; % * 100
@@ -58,13 +58,14 @@ end
 COLORs = ['r','c','b','k','m' ,'y','g'];
 semilogy(wav, H(1,:)./H(1,1), COLORs(1))
 hold on
-str_legend(1) = {['dis = ' num2str(sqrt(vessel.z^2 + allProbes_r(1)^2))]};
+str_legend(1) = {['D = ' num2str(sqrt(vessel.z^2 + allProbes_r(1)^2),4)]};
 if num_probes > 1
     for jj = 2:num_probes
         semilogy(wav, H(jj,:)./H(1,1), COLORs(jj))
-        str_legend{jj} =  ['dis = ' num2str(sqrt(vessel.z^2 + allProbes_r(jj)^2))];
+        str_legend{jj} =  ['D = ' num2str(sqrt(vessel.z^2 + allProbes_r(jj)^2),4)];
     end
 end
 legend(str_legend)
+xlabel('wavelength [nm]')
 hold off
 %------------------------------ plot END ----------------------------- %

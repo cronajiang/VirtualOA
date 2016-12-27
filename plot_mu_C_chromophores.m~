@@ -37,14 +37,13 @@ ii = 1;
         title('Coefficients for the bulk')
 %         hold off
         xlabel('wavelength [nm]')
-         ylabel('coefficient [mm^{-1}]')
         
         axes(haxes2)
         plot(T,mus_bulk)
         title('Scattering Coefficients for the bulk [mm-1]')
 %         plot(T,Ex_lipid)
         xlabel('wavelength [nm]')
-        ylabel('coefficient [mm^{-1}]')
+        ylabel('coefficient')
         axes(haxes3)
         cla
 %         hold on
@@ -57,7 +56,6 @@ ii = 1;
         legend('HHb', 'OHb','mua')
         title('Extinction coefficients for the vessel')
        xlabel('wavelength [nm]')
-        ylabel('coefficient [mm^{-1}]')
 %         hold off
 
 

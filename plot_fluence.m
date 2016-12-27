@@ -70,7 +70,7 @@ end
 high_F = max(F_h);
 
 % lowest are always around wav 700 730, pos close to (45,60)
-wav_low = 650;
+wav_low = [650 910];
 pLow.r = 45;
 pLow.z = 60;
 for ii = 1:length(wav_low)
@@ -126,7 +126,7 @@ set(h, 'ylim', [low high])
 
 % calculate the product  
 H = A_green* G(vessel.z + 1, vessel.r + 46) * mua_vessel;
-text(vessel.r+30,vessel.z+6,200,['H = mua_v x fluence_b' ],'HorizontalAlignment','right','Color','k')
+text(vessel.r+30,vessel.z+6,200,['H = \mu_a_v x Fluence_b' ],'HorizontalAlignment','right','Color','k')
 text(vessel.r+32,vessel.z+11,200,['=' num2str(mua_vessel) ' x ' num2str(A_green*G(vessel.z + 1, vessel.r + 46))],'HorizontalAlignment','right','Color','k')
 text(vessel.r+14,vessel.z+16,200,['=' num2str(H)],'HorizontalAlignment','right','Color','k')
 
