@@ -100,6 +100,7 @@ low_muaV = min(mua_vessel_h);
 %%%%%%%%%%%%%%%%%%%%end %%%%%%%%%%%%%%%%%%
 cla
 hold on
+%title('fluence field for laser 1')
 set(gca,'Ydir','reverse')
 xlabel('rho [mm]')
 ylabel('z [mm]')
