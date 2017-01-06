@@ -31,7 +31,7 @@ ii = 1;
         [Ex_bulk_HHb', Ex_bulk_OHb', Ex_bulk_H2O',Ex_bulk_Lipid', mua_bulk'],T,mu_eff);
 
 
-        legend('mua_{HHb}', 'mua_{OHb}', 'mua_{H2O}'  ,'mua_{Lipid}','mua', 'mu_{eff}')
+        legend('\mu_a^{Hb}', '\mu_a^{OHb}', '\mu_a^{H2O}'  ,'\mu_a^{Lipid}','\mu_a', '\mu_{eff}')
         set(hLine2, 'LineStyle','--')
         set(hLine2,'LineWidth',3)
         title('Coefficients for the bulk')
@@ -41,7 +41,7 @@ ii = 1;
         
         axes(haxes2)
         plot(T,mus_bulk)
-        title('Scattering Coefficients for the bulk [mm-1]')
+        title('Scattering Coefficients for the bulk')
 %         plot(T,Ex_lipid)
         xlabel('wavelength [nm]')
         ylabel('coefficient [mm^{-1}]')
@@ -54,7 +54,7 @@ ii = 1;
        set(hLine2, 'LineStyle','--')
         set(hLine2,'LineWidth',3)
         
-        legend('HHb', 'OHb','mua')
+        legend('HHb', 'OHb','\mua')
         title('Extinction coefficients for the vessel')
        xlabel('wavelength [nm]')
         ylabel('coefficient [mm^{-1}]')

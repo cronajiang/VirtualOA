@@ -11,7 +11,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function x = reconstructionFcn(paras, rDataNoise)
    
-    opts = optimoptions(@lsqcurvefit,'MaxFunEvals',150,'Display','iter-detailed','TolX',1e-12,'TolFun',1e-12,'Algorithm','levenberg-marquardt','PlotFcns',{@optimplotx,@optimplotfunccount ,@optimplotfval,@optimplotresnorm,@optimplotstepsize,@optimplotfirstorderopt})
+    opts = optimoptions(@lsqcurvefit,'MaxFunEvals',150,'Display','iter-detailed','TolX',1e-12,'TolFun',1e-12,'Algorithm','trust-region-reflective','PlotFcns',{@optimplotx,@optimplotfunccount ,@optimplotfval,@optimplotresnorm,@optimplotstepsize,@optimplotfirstorderopt})
     lower=[paras.a_range(1) * paras.CHHb_range(1) * 100,...
         paras.a_range(1) * paras.COHb_range(1) * 10,...
         paras.a_range(1) * paras.CH2O_range(1),...
@@ -52,11 +52,11 @@ function x = reconstructionFcn(paras, rDataNoise)
         [extraPara.P(ii).rl, extraPara.P(ii).rb] =  dis_semiinfinite(vessel, Laser);
     end
     
-    % factor of scaling
-    if isfield(paras, 'fac_scl')
-        extraPara.fac_scl = paras.fac_scl;
-        rDataNoise = rDataNoise ./ extraPara.fac_scl;
-    end
+%     % factor of scaling
+%     if isfield(paras, 'fac_scl')
+%         extraPara.fac_scl = paras.fac_scl;
+%         rDataNoise = rDataNoise ./ extraPara.fac_scl;
+%     end
      
     ydata = @(x,xdata)y_Fcn(x,xdata, extraPara);
     [x,resnorm] = lsqcurvefit(ydata,init,0,rDataNoise,lower,upper,opts);

@@ -84,14 +84,15 @@ set(handles.textWav, 'String', num2str(700));
 set(handles.radiobuttonSingleForward,'Value',1)
 set(handles.radiobuttonForearm,'Value',1)
  
-set(handles.editStOvRef, 'String', num2str(0.98))
-set(handles.editTHbRef, 'String', num2str(0.075)) %  
-set(handles.editStObRef, 'String', num2str(0.65))
-set(handles.editCH2ORef, 'String', num2str(0.75)) % have not found this value
+set(handles.editStOvRef, 'String', num2str(0.98)) % artery
+set(handles.editTHbRef, 'String', num2str(0.117)) %  Jacques_PMB2013
+set(handles.editStObRef, 'String', num2str(0.64))
+set(handles.editCH2ORef, 'String', num2str(0.65)) % have not found this value
 set(handles.editaRef, 'String', num2str(0.8))
 set(handles.editbRef, 'String', num2str(0.2)) % a and b vary a lot, but this is reasonable.
 set(handles.editNoiseLevel, 'String', num2str(0))  
-     
+set(handles.textContNoiseLevel, 'String', num2str(0))  
+    
    
 handles.StOv_range =  [get(handles.sliderStOv, 'Min') get(handles.sliderStOv, 'Max')];
 handles.TCHb_range =  [get(handles.sliderTCHb, 'Min') get(handles.sliderTCHb, 'Max')];
@@ -216,7 +217,8 @@ if get(handles.radiobuttonSingleForward,'Value') == 1
     handles.ref.a = str2double(get(handles.editaRef, 'String'));
     handles.ref.b = str2double(get(handles.editbRef, 'String'));
     handles.NoiseLevel = 0.01*str2double(get(handles.editNoiseLevel, 'String'));
-   % range of noise level = [0, 10]
+   set(handles.textContNoiseLevel, 'String', num2str(100*handles.NoiseLevel));
+    % range of noise level = [0, 10]
     if handles.NoiseLevel > 0.1
         handles.NoiseLevel = 0.1;
     end
@@ -260,7 +262,8 @@ if get(handles.radiobuttonSingleForward,'Value') == 1
     plot(handles.ref.rDataRefNoise,'-*r')
      
     legend('reference signal','noisy signal')
-    
+    ylabel('value')
+    xlabel('data index')
     % ------------------  DISPLAY RESULT END ---------------------%
     
  %----------------- plot mu - C_chromophores ---------------------%
@@ -326,6 +329,9 @@ elseif get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
+        ylabel('value')
+        xlabel('data index')
+
         if  isfield(handles, 'ref')
             plot(handles.cont.ForwardResult,'-oc')
             plot(handles.ref.ForwardResult,'-ob')
@@ -380,23 +386,23 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
     % ----------------- RECONSTRUCTION START ------------------- %
    if isfield(handles, 'ref')
   
-      % get scaling factor 
-            if handles.numLasers > 1
-                numWav = 27;    
-                factor_scl = ones(1,numWav).*mean(handles.ref.ForwardResult(1:numWav));
-                for jj = 2:handles.numLasers
-                     
-                    factor_scl((jj - 1)* numWav  + 1 :jj * numWav  ) = ...
-                    ones(1,numWav ) .* ...
-                    mean(handles.ref.ForwardResult((jj - 1)*numWav + 1 :jj *numWav )) ./ ...
-                    mean(handles.ref.ForwardResult(1:numWav ));
-                     
-                end
-            else
-                factor_scl = ones(1,27);
-            end
-   
-    handles.init.fac_scl = factor_scl;        
+%       % get scaling factor 
+%             if handles.numLasers > 1
+%                 numWav = 27;    
+%                 factor_scl = ones(1,numWav).*mean(handles.ref.ForwardResult(1:numWav));
+%                 for jj = 2:handles.numLasers
+%                      
+%                     factor_scl((jj - 1)* numWav  + 1 :jj * numWav  ) = ...
+%                     ones(1,numWav ) .* ...
+%                     mean(handles.ref.ForwardResult((jj - 1)*numWav + 1 :jj *numWav )) ./ ...
+%                     mean(handles.ref.ForwardResult(1:numWav ));
+%                      
+%                 end
+%             else
+%                 factor_scl = ones(1,27);
+%             end
+%    
+%     handles.init.fac_scl = factor_scl;        
     handles.recResult = reconstructionFcn(handles.init, handles.ref.rDataRefNoise); % noisy reference forward result
     handles.rec.StOv = handles.recResult(5); 
     handles.rec.CHHb = handles.recResult(1)/100; % it is actually a* CHHb
@@ -433,13 +439,15 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
             handles.ref.b];
       axes(handles.axesRecResult)
       
-      plot(handles.recResult,'o')
+      plot(handles.recResult,'ob', 'MarkerSize',10)
       hold on
-      plot(ref,'*g')
-      plot(init,'rx')
+      plot(ref,'*g', 'MarkerSize',10)
+      plot(init,'rx', 'MarkerSize',10)
       legend('reconstruction', 'reference', 'initial guess','Location','northwest')
       Labels = {'a*C_{HHb}b', 'a*C_{OHb}b', 'a*C_{H2O}b', 'a*C_{Lipid}b','StOv', 'b'};
       set(gca, 'XTick', [1:6], 'XTickLabel', Labels);
+      ylabel('value')
+      xlabel('parameters')
       hold off
        
       axes(handles.axesRecStO)
@@ -454,21 +462,24 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
       ylim([ymin ,ymax])
       set(gca,'ytick',[ymin:0.05:ymax]);
       bar(handles.rec.StOv, 'BaseValue', ymin, 'FaceAlpha',.3,'EdgeAlpha',.3);
-     
+%       text(1,handles.rec.StOv,1,num2str(handles.rec.StOv),'HorizontalAlignment','right','Color','k')
+title(['rec = ' num2str(handles.rec.StOv,3)])
      %%% plot oxy for the bulk
        axes(handles.axesRecStOBulk)
        cla
-       Labels = {' Reconstructed StOb'};
+       Labels = {'Reconstructed StOb'};
        set(gca, 'XTick', 1, 'XTickLabel', Labels);
        ymax = 1;
        ymin = 0.3;
+       hold on
        plot([0:2],handles.ref.StOb*ones(size([0:2])),'--g','LineWidth',3);
        hold on
        plot([0:2],handles.init.StOb*ones(size([0:2])),'--r','LineWidth',3);
        ylim([ymin ,ymax])
        set(gca,'ytick',[ymin:0.05:ymax]);
        bar(handles.rec.StOb, 'BaseValue', ymin,'FaceAlpha',.3,'EdgeAlpha',.3);
- 
+ title(['rec = ' num2str(handles.rec.StOb,3)])
+
        % display forward result for reconstructed values
        % --------------  PARAMETERS ASSIGNMENT -------------------- % 
        handles.rec.vesselpos = handles.Vessel.pos;
@@ -482,16 +493,25 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
        axes(handles.axesForwardResult)
        cla
        hold on
-       if  isfield(handles.init, 'fac_scl')
-            plot(handles.init.RatioResult./handles.init.fac_scl,'-oc')
-           plot(handles.ref.ForwardResult./handles.init.fac_scl,'-ob')
-           plot(handles.ref.rDataRefNoise./handles.init.fac_scl,'-*r')
-           plot(handles.rec.RatioResult./handles.init.fac_scl, '-*k')
+       ylabel('value')
+       xlabel('data index')
+       plot(handles.init.RatioResult,'-oc')
+       plot(handles.ref.ForwardResult,'-ob')
+       plot(handles.ref.rDataRefNoise,'-*r')
+       plot(handles.rec.RatioResult, '-*k')
 
-           legend('initial', 'reference', 'noisy reference', 'reconstructed')
-    %        title('scaled ratio data')
-        
-       end
+       legend('initial', 'reference', 'noisy reference', 'reconstructed')   
+
+% %         if  isfield(handles.init, 'fac_scl')
+%             plot(handles.init.RatioResult./handles.init.fac_scl,'-oc')
+%            plot(handles.ref.ForwardResult./handles.init.fac_scl,'-ob')
+%            plot(handles.ref.rDataRefNoise./handles.init.fac_scl,'-*r')
+%            plot(handles.rec.RatioResult./handles.init.fac_scl, '-*k')
+% 
+%            legend('initial', 'reference', 'noisy reference', 'reconstructed')
+%     %       title('scaled ratio data') 
+%         
+%        end
     % ---------------- DISPLAY RECONSTRUCTION RESULT END---------%
     
 else
@@ -577,6 +597,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
          cla
         hold on
+            ylabel('value')
+    xlabel('data index')
+
         if  isfield(handles, 'ref')
             plot(handles.cont.ForwardResult,'-oc')
             plot(handles.ref.ForwardResult,'-ob')
@@ -825,6 +848,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
+            ylabel('value')
+    xlabel('data index')
+
         if  isfield(handles, 'ref')
             plot(handles.cont.ForwardResult,'-oc')
             plot(handles.ref.ForwardResult,'-ob')
@@ -914,6 +940,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
+            ylabel('value')
+    xlabel('data index')
+
         if  isfield(handles, 'ref')
             plot(handles.cont.ForwardResult,'-oc')
             plot(handles.ref.ForwardResult,'-ob')
@@ -1136,6 +1165,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
+            ylabel('value')
+    xlabel('data index')
+
         if  isfield(handles, 'ref')
             plot(handles.cont.ForwardResult,'-oc')
             plot(handles.ref.ForwardResult,'-ob')
@@ -1222,6 +1254,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
+            ylabel('value')
+    xlabel('data index')
+
         if  isfield(handles, 'ref')
             plot(handles.cont.ForwardResult,'-oc')
             plot(handles.ref.ForwardResult,'-ob')
@@ -1331,6 +1366,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
+            ylabel('value')
+    xlabel('data index')
+
         if  isfield(handles, 'ref')
             plot(handles.cont.ForwardResult,'-oc')
             plot(handles.ref.ForwardResult,'-ob')
@@ -1440,6 +1478,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
+            ylabel('value')
+    xlabel('data index')
+
         if  isfield(handles, 'ref')
             plot(handles.cont.ForwardResult,'-oc')
             plot(handles.ref.ForwardResult,'-ob')
@@ -1704,16 +1745,24 @@ selectedObj = get(handles.uipanelModeSelection, 'SelectedObject');
 mode = get(selectedObj, 'String');
 set(handles.textContDis1,'Visible','On');
 set(handles.textContDis2,'Visible','On');
-set(handles.textContNumLaser, 'Visible','On')
+set(handles.textContNumLaser, 'Visible','On')   
+set(handles.textContNoiseLevel, 'Visible','On');
+set(handles.radiobuttonPlotFluence,'Enable','on');
+
+set(handles.radiobuttonPlotMuaC,'Enable','off');
+set(handles.radiobuttonPlotUltraSignal,'Enable','off');
+
 switch mode
-    case 'Single Forward'
+    case 'Forward Simulation'
         set(handles.textContDis1,'Visible','Off');
         set(handles.textContDis2,'Visible','Off');
         set(handles.textContNumLaser, 'Visible','Off')
-    case 'Manual Fitting'
-        % disable editDis1 editDis2 and Numpos
+        set(handles.textContNoiseLevel, 'Visible','Off');
         
+        set(handles.radiobuttonPlotUltraSignal,'Enable','on');
 
+        set(handles.radiobuttonPlotMuaC,'Enable','on')
+    case 'Manual Fitting'
       %%%%%%%%%%%%%%%%%%%%%%%  Continuous mode STARR %%%%%%%%%%%%%%%%%%%%%%%     
     % --------------  PARAMETERS ASSIGNMENT -------------------- % 
     handles.cont.StOv = get(handles.sliderStOv, 'Value');
@@ -1746,7 +1795,9 @@ switch mode
         axes(handles.axesForwardResult)
         cla
         hold on
-        
+            ylabel('value')
+    xlabel('data index')
+
         if  isfield(handles, 'ref')
             plot(handles.cont.ForwardResult,'-oc')
             plot(handles.ref.ForwardResult,'-ob')
@@ -1774,6 +1825,7 @@ switch mode
  %%%%%%%%%%%%%%%%%%%%%%%  Continuous mode END %%%%%%%%%%%%%%%%%%%%%%% 
    
     case 'Reconstruction'
+        set(handles.radiobuttonPlotFluence,'Enable','off');
 end
 guidata(hObject, handles);
 
@@ -1789,19 +1841,19 @@ selectedObj = get(handles.uipanel4, 'SelectedObject');
 tissueType = get(selectedObj, 'String');
 
 switch tissueType
-    case 'Breast'
-    set(handles.editStOvRef, 'String', num2str(0.62))
-    set(handles.editTHbRef, 'String', num2str(0.05)) %  
-    set(handles.editStObRef, 'String', num2str(0.7))
-    set(handles.editCH2ORef, 'String', num2str(0.75))
-    set(handles.editaRef, 'String', num2str(0.6))
-    set(handles.editbRef, 'String', num2str(0.3)) % a and b vary a lot, but this is reasonable.
-    
+%     case 'Head'
+%     set(handles.editStOvRef, 'String', num2str(0.62))
+%     set(handles.editTHbRef, 'String', num2str(0.078)) %  
+%     set(handles.editStObRef, 'String', num2str(0.7))
+%     set(handles.editCH2ORef, 'String', num2str(0.64))
+%     set(handles.editaRef, 'String', num2str(0.6))
+%     set(handles.editbRef, 'String', num2str(0.3)) % a and b vary a lot, but this is reasonable.
+%     
     case 'Forearm'
-    set(handles.editStOvRef, 'String', num2str(0.98))
-    set(handles.editTHbRef, 'String', num2str(0.075)) %  
-    set(handles.editStObRef, 'String', num2str(0.65))
-    set(handles.editCH2ORef, 'String', num2str(0.75)) % have not found this value
+    set(handles.editStOvRef, 'String', num2str(0.98)) % artery
+    set(handles.editTHbRef, 'String', num2str(0.117)) %  Jacques_PMB2013
+    set(handles.editStObRef, 'String', num2str(0.64))
+    set(handles.editCH2ORef, 'String', num2str(0.2)) % have not found this value
     set(handles.editaRef, 'String', num2str(0.8))
     set(handles.editbRef, 'String', num2str(0.2)) % a and b vary a lot, but this is reasonable.
 end
@@ -1946,7 +1998,7 @@ h3 = uicontrol(...
 'Parent',h2,...
 'Units','pixels',...
 'Position', r.*  [10 5 150 30],...
-'String','Single Forward',...
+'String','Forward Simulation',...
 'Style','radiobutton',...
 'Tag','radiobuttonSingleForward',...
 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
@@ -1993,20 +2045,20 @@ h6 = uibuttongroup(...
 'OldSelectedObject',[],...
 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
 
-appdata = [];
-appdata.lastValidTag = 'radiobuttonBreast';
-set(h6, 'Units', 'Normalized');
-
-h7 = uicontrol(...
-'Parent',h6,...
-'Units','pixels',...
-'Position', r.*  [160 5 150 30],...
-'String','Breast',...
-'Value',0,...
-'Style','radiobutton',...
-'Tag','radiobuttonBreast',...
-'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
-set(h7, 'Units', 'Normalized');
+% appdata = [];
+% appdata.lastValidTag = 'radiobuttonHead';
+% set(h6, 'Units', 'Normalized');
+% 
+% h7 = uicontrol(...
+% 'Parent',h6,...
+% 'Units','pixels',...
+% 'Position', r.*  [160 5 150 30],...
+% 'String','Head',...
+% 'Value',0,...
+% 'Style','radiobutton',...
+% 'Tag','radiobuttonBreast',...
+% 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
+% set(h7, 'Units', 'Normalized');
 
 appdata = [];
 appdata.lastValidTag = 'radiobuttonForearm';
@@ -2074,7 +2126,7 @@ appdata.lastValidTag = 'text23';
 h16 = uicontrol(...
 'Parent',h10,...
 'Units','pixels',...
-'Position', r.*  [290  280 96 14],...
+'Position', r.*  [290  283 96 14],...
 'String','Forward Result',...
 'Style','text',...
 'Tag','text23',...
@@ -2087,7 +2139,7 @@ appdata.lastValidTag = 'axesForwardResult';
 h17 = axes(...
 'Parent',h10,...
 'Units','pixels',...
-'Position', r.*  [290  30 400 240],...
+'Position', r.*  [295  35 395 240],...
 'CameraPosition',[0.5 0.5 9.16025403784439],...
 'CameraPositionMode',get(0,'defaultaxesCameraPositionMode'),...
 'Color',get(0,'defaultaxesColor'),...
@@ -2357,7 +2409,7 @@ appdata.lastValidTag = 'uipanel2';
 h63 = uipanel(...
 'Parent',h1,...
 'Units','pixels',...
-'Title',{  'Panel' },...
+'Title',{  'Parameters' },...
 'Clipping','on',...
 'Position', r.*  [50 30 450 470],...
 'Tag','uipanel2',...
@@ -2618,6 +2670,22 @@ h81 = uicontrol(...
 'CreateFcn', {@local_CreateFcn, @(hObject,eventdata)GUI_main('editNoiseLevel_CreateFcn',hObject,eventdata,guidata(hObject)), appdata} ,...
 'Tag','editNoiseLevel');
 set(h81, 'Units', 'Normalized');
+
+
+appdata = [];
+appdata.lastValidTag = 'textContNoiseLevel';
+
+h811 = uicontrol(...
+'Parent',h63,...
+'Units','pixels',...
+'Position', r.*  [148.75 156 40 20],...
+'String','0',...
+'Style','text',...
+'Tag','textContNoiseLevel',...
+'CreateFcn', {@local_CreateFcn, blanks(0), appdata} ,...
+'Visible', 'Off');
+set(h811, 'Units', 'Normalized');
+
 
 appdata = [];
 appdata.lastValidTag = 'pushbutton1';
@@ -2987,7 +3055,7 @@ h106 = uicontrol(...
 'Units','pixels',...
 'Callback',@(hObject,eventdata)GUI_main('editCH2ORef_Callback',hObject,eventdata,guidata(hObject)),...
 'Position', r.*  [148.75 300 40 20],...
-'String','0.75',...
+'String','0.65',...
 'Style','edit',...
 'CreateFcn', {@local_CreateFcn, @(hObject,eventdata)GUI_main('editCH2ORef_CreateFcn',hObject,eventdata,guidata(hObject)), appdata} ,...
 'Tag','editCH2ORef');
@@ -3033,9 +3101,9 @@ h109 = uicontrol(...
 'String',{  'Slider' },...
 'Style','slider',...
 'Value',0.7,...
-'Max', 1,...
-'Min', 0.3,...
-'SliderStep',[0.01/(1-0.3) 0.1/(1-0.3)],...
+'Max', 0.9,...
+'Min', 0.05,...
+'SliderStep',[0.01/(0.9-0.05) 0.1/(0.9-0.05)],...
 'CreateFcn', {@local_CreateFcn, @(hObject,eventdata)GUI_main('sliderCH2O_CreateFcn',hObject,eventdata,guidata(hObject)), appdata} ,...
 'UserData',[],...
 'Tag','sliderCH2O');

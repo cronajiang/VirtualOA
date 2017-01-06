@@ -42,15 +42,16 @@ for jj  = 1:num_lasers
 end
 
 for jj = 1: num_lasers
-    F(num_wav * (jj-1)+1: num_wav*jj) = H(jj,:)./mean(H(jj,:));
+    F(num_wav * (jj-1)+1: num_wav*jj) =  H(jj,:)./mean(H(jj,:)); % ratio data
 end
+F = log(F);
 
 if isfield(paras, 'NoiseLevel')
     %         % generate noisy result
         noise =paras.NoiseLevel .*F.*2.*(0.5-rand(1,num_lasers * num_wav));
         F = F + noise;
 end
-if isfield(paras, 'fac_scl')
-    F = F ./ paras.fac_scl;  
-end
+% if isfield(paras, 'fac_scl')
+%     F = F ./ paras.fac_scl;  
+% end
 
