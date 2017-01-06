@@ -55,13 +55,15 @@ for jj = 1: num_lasers
 end
 %--------------- calculate ultrasound signal level END ----------------%
 %------------------------------ plot START --------------------------- %
-COLORs = ['r','c','b','k','m' ,'y','g'];
-semilogy(wav, H(1,:)./H(1,1), COLORs(1))
+COLORs=hsv(num_lasers);
+% for i=1:num_lasers; plot(1:10,rand(1,10),'col',COLORs(i,:)); end
+% COLORs = jet(num_lasers);
+semilogy(wav, H(1,:)./H(1,1), 'color', [COLORs(1,:)])
 hold on
 str_legend(1) = {['D = ' num2str(sqrt(vessel.z^2 + alllasers_r(1)^2),4)]};
 if num_lasers > 1
     for jj = 2:num_lasers
-        semilogy(wav, H(jj,:)./H(1,1), COLORs(jj))
+        semilogy(wav, H(jj,:)./H(1,1),'color',[ COLORs(jj,:)])
         str_legend{jj} =  ['D = ' num2str(sqrt(vessel.z^2 + alllasers_r(jj)^2),4)];
     end
 end
