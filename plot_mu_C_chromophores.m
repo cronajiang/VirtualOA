@@ -3,7 +3,7 @@
 %   plot spectra of all chromophores 
 %   input: paras, haxes1, haxes2, haxes3
 %         
-%   author: jingjing Jiang  cronajiang@gmail.com
+%   author: jingjing Jiang  jjiang@student.ethz.com
 %   created: 01.02.2016
 %   modified: 07.03.2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -21,46 +21,34 @@ ii = 1;
          mu_eff(ii) = sqrt(3*mua_bulk(ii)*mus_bulk(ii));
          ii = ii + 1;
      end
-%         figure(3)
-%        cla
-        axes(haxes1)
-        cla
-       
 
-        [hAx,hLine1,hLine2] = plotyy([T'],...
-        [Ex_bulk_HHb', Ex_bulk_OHb', Ex_bulk_H2O',Ex_bulk_Lipid', mua_bulk'],T,mu_eff);
-
-
-        legend('\mu_a^{Hb}', '\mu_a^{OHb}', '\mu_a^{H2O}'  ,'\mu_a^{Lipid}','\mu_a', '\mu_{eff}')
-        set(hLine2, 'LineStyle','--')
-        set(hLine2,'LineWidth',3)
-        title('Coefficients for the bulk')
-%         hold off
-        xlabel('wavelength [nm]')
-         ylabel('coefficient [mm^{-1}]')
+     axes(haxes1)
+     cla
+     [hAx,hLine1,hLine2] = plotyy([T'],...
+     [Ex_bulk_HHb', Ex_bulk_OHb', Ex_bulk_H2O',Ex_bulk_Lipid', mua_bulk'],T,mu_eff);
+     legend('\mu_a^{Hb}', '\mu_a^{OHb}', '\mu_a^{H2O}'  ,'\mu_a^{Lipid}','\mu_a', '\mu_{eff}')
+     set(hLine2, 'LineStyle','--')
+     set(hLine2,'LineWidth',3)
+     title('Coefficients for the bulk')
+     xlabel('wavelength [nm]')
+     ylabel('coefficient [mm^{-1}]')
         
-        axes(haxes2)
-        plot(T,mus_bulk)
-        title('Scattering Coefficients for the bulk')
-%         plot(T,Ex_lipid)
-        xlabel('wavelength [nm]')
-        ylabel('coefficient [mm^{-1}]')
-        axes(haxes3)
-        cla
-%         hold on
-        [hAx,hLine1,hLine2] = plotyy([T'],...
+     axes(haxes2)
+     plot(T,mus_bulk)
+     title('Scattering Coefficients for the bulk')
+     xlabel('wavelength [nm]')
+     ylabel('coefficient [mm^{-1}]')
+     
+     axes(haxes3)
+     cla
+     [hAx,hLine1,hLine2] = plotyy([T'],...
             [Ex_vessel_HHb', Ex_vessel_OHb'],T,Ex_vessel_HHb+Ex_vessel_OHb);
-        
-       set(hLine2, 'LineStyle','--')
-        set(hLine2,'LineWidth',3)
-        
-        legend('HHb', 'OHb','\mua')
-        title('Extinction coefficients for the vessel')
-       xlabel('wavelength [nm]')
-        ylabel('coefficient [mm^{-1}]')
-%         hold off
-
-
+     set(hLine2, 'LineStyle','--')
+     set(hLine2,'LineWidth',3)
+     legend('HHb', 'OHb','\mua')
+     title('Extinction coefficients for the vessel')
+     xlabel('wavelength [nm]')
+     ylabel('coefficient [mm^{-1}]')
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

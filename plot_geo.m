@@ -3,7 +3,7 @@
 %   plot current model 
 %   input: vessel_pos, laser_pos,num_lasers
 %         
-%   author: jingjing Jiang  cronajiang@gmail.com
+%   author: jingjing Jiang  jjiang@student.ethz.com
 %   created: 01.02.2016
 %   modified: 27.12.2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -23,7 +23,8 @@ ylim(bound.z);
 xlabel('rho [mm]')
 ylabel('z [mm]')
 % draw tissue volume
-rectangle('Position',[-45 0 90 60], 'FaceColor' ,[0.5 0.5 1])
+% rectangle('Position',[-45 0 90 60], 'FaceColor' ,[0.5 0.5 1])
+rectangle('Position',[-45 0 90 60], 'FaceColor' ,[0.75 0.7 0.7])
 text(-15,40,'Bulk','HorizontalAlignment','right','Color','k')
 
 % draw distance

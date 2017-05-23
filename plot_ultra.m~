@@ -3,7 +3,7 @@
 %   plot ultrasound signal levels for different locations of lasers  
 %   input: paras
 %         
-%   author: jingjing Jiang jjiang@student.ethz.ch
+%   author: jingjing Jiang  cronajiang@gmail.com
 %   created: 01.02.2016
 %   modified: 27.12.2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -50,8 +50,6 @@ for jj = 1: num_lasers
     laser.r = alllasers_r(jj);  
 %     [rl, rb] =  dis_semiinfinite(vessel, laser);
 %      G(jj, ii) = Green_semi(mu_eff_bulk(ii), rl, rb);
-     G(jj, ii) = cal_fluence(mu_eff_bulk(ii),vessel.z, ...
-         sqrt(laser.r.^2 + vessel.z .^2));
      H(jj, ii) = G(jj,ii) * mua_vessel(ii);
     end
 end

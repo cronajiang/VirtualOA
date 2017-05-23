@@ -5,7 +5,7 @@
 %   input: oxy: 0<= oxy <= 1
 %        wav: wavelength
 %
-%   author: jingjing Jiang  cronajiang@gmail.com
+%   author: jingjing Jiang  jjiang@student.ethz.com
 %   created: 01.02.2016
 %   modified: 07.03.2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -6,7 +6,7 @@
 %           x_data, void 
 %           paras, other parameters
 %
-%   author: jingjing Jiang  cronajiang@gmail.com
+%   author: jingjing Jiang  jjiang@student.ethz.com
 %   created: 01.02.2016
 %   modified: 07.03.2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -19,7 +19,6 @@ ac_Lipid_bulk = x(4);
 oxy = x(5);
 b = x(6);
 num_lasers = paras.numLaser;
-% noiselevel = paras.noiselevel*0.01;
 num_wav = 27;
 wav = linspace(650,910,num_wav);
 mus_bulk_noa = (wav / 1000).^(-b);
@@ -36,8 +35,8 @@ end
 % scale the signal to the mean value
 for jj  = 1:num_lasers
     for ii = 1:num_wav
-    G(jj, ii) = Green_semi(mu_eff_bulk(ii), paras.P(jj).rl, paras.P(jj).rb);
-    H(jj, ii) = G(jj, ii) * mua_vessel(ii);
+        G(jj, ii) = cal_fluence(mu_eff_bulk(ii), paras.z, paras.d(jj));    
+        H(jj, ii) = G(jj, ii) * mua_vessel(ii);
     end
 end
 

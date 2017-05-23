@@ -46,11 +46,13 @@ function x = reconstructionFcn(paras, rDataNoise)
         laser2.z = paras.laserpos(2,1);
         allLasers_r = linspace(laser1.r, laser2.r, num_lasers);
     end  
-    for ii = 1: num_lasers
-        Laser.z = 0;
-        Laser.r = allLasers_r(ii);
-        [extraPara.P(ii).rl, extraPara.P(ii).rb] =  dis_semiinfinite(vessel, Laser);
-    end
+    extraPara.d = sqrt(allLasers_r.^2 + vessel.z .^2);
+    extraPara.z = vessel.z;
+%     for ii = 1: num_lasers
+%         Laser.z = 0;
+%         Laser.r = allLasers_r(ii);
+%         [extraPara.P(ii).rl, extraPara.P(ii).rb] =  dis_semiinfinite(vessel, Laser);
+%     end
     
 %     % factor of scaling
 %     if isfield(paras, 'fac_scl')
