@@ -1551,16 +1551,41 @@ handles.numLasers = str2double(get(handles.editNumLaser, 'String'));
 set(handles.textContNumLaser, 'String', num2str(handles.numLasers))
 if handles.numLasers == 1
     dis1 = str2double(get(handles.editDis1, 'String'));
+    if dis1 >60
+        dis1 = 60;
+        set(handles.editDis1,'String',60);
+    end
+    if dis1<0
+        dis1 = 0;
+        set(handles.editDis1,'String',0);
+    end
     set(handles.textContDis1,'String', num2str(dis1));
     handles.Vessel.pos = [0,dis1]; 
     axes(handles.axesModel)
     plot_geo(handles.Vessel.pos, handles.Laser1.pos,1);
 else
     dis1 = str2double(get(handles.editDis1, 'String'));
+    if dis1 >60
+        dis1 = 60;
+        set(handles.editDis1,'String',60);
+    end
+    if dis1<0
+        dis1 = 0;
+        set(handles.editDis1,'String',0);
+    end
     set(handles.textContDis1,'String', num2str(dis1));
     handles.Vessel.pos = [0,dis1];  
     % handles.Laser1.pos = [0,0]; %(r,z) --> (x,y)
+     
     dis2 = str2double(get(handles.editDis2,'String'));
+%     if dis2 > 45
+%         dis2 = 45;
+%         set(handles.editDis2,'String',dis2);
+%     end
+%     if dis2 < -45
+%         dis2 = -45;
+%         set(handles.editDis2,'String',dis2);
+%     end
     set(handles.textContDis2, 'String', num2str(dis2))
     handles.Laser2.pos = [dis2,0];
     axes(handles.axesModel)
@@ -1610,6 +1635,14 @@ else
     handles.Vessel.pos = [0,dis1];  
     % handles.Laser1.pos = [0,0]; %(r,z) --> (x,y)
     dis2 = str2double(get(handles.editDis2,'String'));
+    if dis2 > 45
+        dis2 = 45;
+        set(handles.editDis2,'String',dis2);
+    end
+    if dis2 < -45
+        dis2 = -45;
+        set(handles.editDis2,'String',dis2);
+    end
     set(handles.textContDis2, 'String', num2str(dis2))
     handles.Laser2.pos = [dis2,0];
     axes(handles.axesModel)
@@ -1689,8 +1722,13 @@ function editNumLaser_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of editNumLaser as a double
 % ----------------  plot_geo START-----------------%
 handles.numLasers = str2double(get(handles.editNumLaser, 'String'));
+ 
 set(handles.textContNumLaser, 'String', num2str(handles.numLasers))
-if handles.numLasers == 1
+if handles.numLasers < 1
+    handles.numLasers = 1;
+    set(handles.editNumLaser, 'String','1')
+    set(handles.textContNumLaser, 'String', num2str(handles.numLasers))
+elseif handles.numLasers == 1
     dis1 = str2double(get(handles.editDis1, 'String'));
     set(handles.textContDis1,'String', num2str(dis1));
     handles.Vessel.pos = [0,dis1]; 
