@@ -1716,9 +1716,6 @@ if get(handles.radiobuttonPlotFluence, 'Value') == 1
     axes(handles.axesFluence)
     cla
     plot_fluence(handles.plotF) 
-    if get(handles.radiobuttonIsSound, 'Value') == 1
-        generate_sound(handles.ref.ForwardResult(1:27)); % later change to wav paras
-    end
 end
     % ----------------- plot fluence END ------------------% 
 
