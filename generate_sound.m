@@ -8,7 +8,9 @@ function generate_sound(A)
         Y = Y + amp(ii)*sin(x.*freq(ii)*2*pi) .* gaussmf(x,[0.7 -0]);
     end
     %%
-   
+ 
+    Y = Y.*A;
+  
     for ii = 1:3
     %     amp = 0.5;
     
