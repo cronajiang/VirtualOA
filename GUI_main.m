@@ -236,7 +236,7 @@ if get(handles.radiobuttonSingleForward,'Value') == 1
     if get(handles.radiobuttonPlotFluence, 'Value') == 1
         handles.plotF = handles.ref;
         handles.plotF.wav = get(handles.sliderWav, 'Value');
-    
+        handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
         axes(handles.axesFluence)
         plot_fluence(handles.plotF)
     end
@@ -311,7 +311,7 @@ elseif get(handles.radiobuttonContForward,'Value') == 1
     if get(handles.radiobuttonPlotFluence, 'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
-    
+    handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
     axes(handles.axesFluence)
     cla
     plot_fluence(handles.plotF)
@@ -345,6 +345,10 @@ elseif get(handles.radiobuttonContForward,'Value') == 1
             
         end
          
+    if get(handles.radiobuttonPlotUltraSignal, 'Value') == 1
+        axes(handles.axesUltra)
+        plot_ultra(handles.cont);
+    end
 
  %%%%%%%%%%%%%%%%%%%%%%%  Continuous mode END %%%%%%%%%%%%%%%%%%%%%%% 
  
@@ -582,6 +586,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
         
         handles.plotF = handles.cont;
         handles.plotF.wav = get(handles.sliderWav, 'Value');
+        handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
         axes(handles.axesFluence)
         cla
         plot_fluence(handles.plotF)
@@ -831,6 +836,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
     if get(handles.radiobuttonPlotFluence, 'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
+    handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
     axes(handles.axesFluence)
     cla
     plot_fluence(handles.plotF)
@@ -924,6 +930,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
     if get(handles.radiobuttonPlotFluence, 'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
+    handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
     axes(handles.axesFluence)
     cla
     plot_fluence(handles.plotF)
@@ -1148,6 +1155,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
     if get(handles.radiobuttonPlotFluence, 'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
+    handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
     axes(handles.axesFluence)
     cla
     plot_fluence(handles.plotF)
@@ -1238,6 +1246,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
     if get(handles.radiobuttonPlotFluence, 'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
+    handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
     axes(handles.axesFluence)
     cla
     plot_fluence(handles.plotF)
@@ -1350,6 +1359,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
     if get(handles.radiobuttonPlotFluence, 'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
+    handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
     axes(handles.axesFluence)
     cla
     plot_fluence(handles.plotF)
@@ -1462,6 +1472,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
     if get(handles.radiobuttonPlotFluence, 'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
+    handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
     axes(handles.axesFluence)
     cla
     plot_fluence(handles.plotF)
@@ -1680,19 +1691,34 @@ if get(handles.radiobuttonSingleForward, 'Value') == 1
      if get(handles.radiobuttonPlotFluence, 'Value') == 1
          handles.plotF = handles.ref; 
         handles.plotF.wav =  handles.wav;
+        handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
+        % for audio volume
+            temp_sig = handles.ref.ForwardResult(1:27);
+             handles.plotF.max_sig = max(temp_sig);
+             handles.plotF.min_sig = min(temp_sig);
+            
+            
+         
         axes(handles.axesFluence)
         cla
         plot_fluence(handles.plotF)
      end
+
+         
+      
     % ----------------- plot fluence END ------------------% 
 elseif get(handles.radiobuttonContForward,'Value') == 1
 % ----------------- plot fluence START ------------------%
 if get(handles.radiobuttonPlotFluence, 'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav =  handles.wav;
+    handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
     axes(handles.axesFluence)
     cla
-    plot_fluence(handles.plotF)
+    plot_fluence(handles.plotF) 
+    if get(handles.radiobuttonIsSound, 'Value') == 1
+        generate_sound(handles.ref.ForwardResult(1:27)); % later change to wav paras
+    end
 end
     % ----------------- plot fluence END ------------------% 
 
@@ -1854,7 +1880,7 @@ switch mode
    if get(handles.radiobuttonPlotFluence, 'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
-    
+    handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
     axes(handles.axesFluence)
     cla
     plot_fluence(handles.plotF)
@@ -1916,6 +1942,14 @@ function radiobuttonPlotFluence_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of radiobuttonPlotFluence
 
+function radiobuttonIsSound_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobuttonPlotFluence (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+ isSound = get(handles.radiobuttonIsSound,'Value');
+ if isSound  
+     % generate sound
+ end
 
 % --- Creates and returns a handle to the GUI figure. 
 function h1 = GUI_main_LayoutFcn(policy)
@@ -2232,7 +2266,7 @@ appdata.lastValidTag = 'axesFluence';
 h28 = axes(...
 'Parent',h10,...
 'Units','pixels',...
-'Position', r.*  [35 35 225 185],...
+'Position', r.*  [35+5 35 200 160],...%r.*  [35 35 225 185],...
 'CameraPosition',[0.5 0.5 9.16025403784439],...
 'CameraPositionMode',get(0,'defaultaxesCameraPositionMode'),...
 'Color',get(0,'defaultaxesColor'),...
@@ -2245,6 +2279,20 @@ h28 = axes(...
 'UserData',[],...
 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
 set(h28, 'Units', 'Normalized');
+
+appdata = [];
+appdata.lastValidTag = 'radiobuttonIsSound';
+
+h28_1 = uicontrol(...
+'Parent',h10,...
+'Units','pixels',...
+'Callback',@(hObject,eventdata)GUI_main('radiobuttonIsSound_Callback',hObject,eventdata,guidata(hObject)),...
+'Position', r.*  [30 205 100 20],...
+'String','generate sound',...
+'Style','radiobutton',...
+'Tag','radiobuttonIsSound',...
+'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
+set(h28_1, 'Units', 'Normalized');
 
 
 
