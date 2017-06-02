@@ -43,7 +43,7 @@ end
 for jj = 1: num_lasers
     F(num_wav * (jj-1)+1: num_wav*jj) =  H(jj,:)./mean(H(jj,:)); % ratio data
 end
-F = log(F);
+% F = log(F);
 
 if isfield(paras, 'NoiseLevel')
     %         % generate noisy result

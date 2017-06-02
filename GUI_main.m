@@ -257,9 +257,12 @@ if get(handles.radiobuttonSingleForward,'Value') == 1
     % --------------------- DISPLAY RESULT -----------------------%
         axes(handles.axesForwardResult)
         cla
-     plot(handles.ref.ForwardResult,'-ob')
+%      plot(handles.ref.ForwardResult,'-ob')
+%     hold on
+%     plot(handles.ref.rDataRefNoise,'-*r')
+   semilogy(handles.ref.ForwardResult,'-ob')
     hold on
-    plot(handles.ref.rDataRefNoise,'-*r')
+    semilogy(handles.ref.rDataRefNoise,'-*r')
      
     legend('reference signal','noisy signal')
     ylabel('value')
@@ -597,6 +600,12 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.cont.ForwardResult = forwardFcn(handles.cont);
     % -----------------  Cont Forward End --------------------- %
     
+    %---------------- plot Ultrasound Signal -------------------------%
+    if get(handles.radiobuttonPlotUltraSignal, 'Value') == 1
+        axes(handles.axesUltra)
+        plot_ultra(handles.cont);
+    end
+%---------------- plot Ultrasound Signal END ---------------------%
 
     % --------------------- DISPLAY RESULT -----------------------%
         axes(handles.axesForwardResult)
@@ -848,7 +857,13 @@ if get(handles.radiobuttonContForward,'Value') == 1
     
    
     % -----------------  Cont Forward End --------------------- %
-    
+        %---------------- plot Ultrasound Signal -------------------------%
+    if get(handles.radiobuttonPlotUltraSignal, 'Value') == 1
+        axes(handles.axesUltra)
+        plot_ultra(handles.cont);
+    end
+%---------------- plot Ultrasound Signal END ---------------------%
+
 
     % --------------------- DISPLAY RESULT -----------------------%
         axes(handles.axesForwardResult)
@@ -942,6 +957,12 @@ if get(handles.radiobuttonContForward,'Value') == 1
         
     % -----------------  Cont Forward End --------------------- %
     
+        %---------------- plot Ultrasound Signal -------------------------%
+    if get(handles.radiobuttonPlotUltraSignal, 'Value') == 1
+        axes(handles.axesUltra)
+        plot_ultra(handles.cont);
+    end
+%---------------- plot Ultrasound Signal END ---------------------%
 
     % --------------------- DISPLAY RESULT -----------------------%
         axes(handles.axesForwardResult)
@@ -1168,6 +1189,12 @@ if get(handles.radiobuttonContForward,'Value') == 1
 %         % generate noisy result
    % -----------------  Cont Forward End --------------------- %
     
+    %---------------- plot Ultrasound Signal -------------------------%
+    if get(handles.radiobuttonPlotUltraSignal, 'Value') == 1
+        axes(handles.axesUltra)
+        plot_ultra(handles.cont);
+    end
+%---------------- plot Ultrasound Signal END ---------------------%
 
     % --------------------- DISPLAY RESULT -----------------------%
         axes(handles.axesForwardResult)
@@ -1258,6 +1285,12 @@ if get(handles.radiobuttonContForward,'Value') == 1
        
     % -----------------  Cont Forward End --------------------- %
     
+    %---------------- plot Ultrasound Signal -------------------------%
+    if get(handles.radiobuttonPlotUltraSignal, 'Value') == 1
+        axes(handles.axesUltra)
+        plot_ultra(handles.cont);
+    end
+%---------------- plot Ultrasound Signal END ---------------------%
 
     % --------------------- DISPLAY RESULT -----------------------%
         axes(handles.axesForwardResult)
@@ -1811,7 +1844,7 @@ set(handles.textContNoiseLevel, 'Visible','On');
 set(handles.radiobuttonPlotFluence,'Enable','on');
 
 set(handles.radiobuttonPlotMuaC,'Enable','off');
-set(handles.radiobuttonPlotUltraSignal,'Enable','off');
+set(handles.radiobuttonPlotUltraSignal,'Enable','on');
 
 switch mode
     case 'Forward Simulation'
@@ -1887,6 +1920,7 @@ switch mode
    
     case 'Reconstruction'
         set(handles.radiobuttonPlotFluence,'Enable','off');
+        set(handles.radiobuttonPlotUltraSignal,'Enable','off');
 end
 guidata(hObject, handles);
 
