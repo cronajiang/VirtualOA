@@ -81,12 +81,12 @@ COLORs=hsv(num_lasers);
     
       semilogy( [0:2], H_aver(1)./H_aver(1) * ones(1,3),'LineWidth',3,'color',COLORs(1,:))
    hold on
-str_legend(1) = {['D = ' num2str(sqrt(vessel.z^2 + alllasers_r(1)^2),4)]};
+str_legend(1) = {['D = ' num2str(sqrt(vessel.z^2 + alllasers_r(1)^2),2)]};
 if num_lasers > 1
     for jj = 2:num_lasers
 %         semilogy(wav, H(jj,:)./H(1,1),'color',[ COLORs(jj,:)])
         semilogy( [0:2], H_aver(jj)./H_aver(1) * ones(1,3),'LineWidth',3,'color',COLORs(jj,:))
-        str_legend{jj} =  ['D = ' num2str(sqrt(vessel.z^2 + alllasers_r(jj)^2),4)];
+        str_legend{jj} =  ['D = ' num2str(sqrt(vessel.z^2 + alllasers_r(jj)^2),2)];
     end
 end
     
@@ -96,7 +96,7 @@ end
 %   ymax = 1;
 %       ymin = 0;
 %       ylim([ymin ,ymax])
-legend(str_legend)
+legend(str_legend,'Location','bestoutside')
 % xlabel('wavelength [nm]')
 hold off
 

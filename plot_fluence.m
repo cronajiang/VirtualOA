@@ -123,10 +123,9 @@ el = 90;
  view(az, el);
  colormap(hot);
 caxis([low high])
-
-colorbar
-h = colorbar;
-set(h, 'ylim', [low high])
+% colorbar
+% h = colorbar;
+% set(h, 'ylim', [low high])
 
 % calculate the product  
 H = A_green* G(vessel.z + 1, vessel.r + 46) * mua_vessel;
