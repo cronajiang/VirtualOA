@@ -9,7 +9,8 @@
 %   modified: 07.03.2016
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function plot_fluence(paras)
-
+axes(paras.axesFluence)
+cla
 % calculate mu_eff
  oxy = paras.StOv; % vessel oxy
  a = paras.a;
@@ -32,7 +33,7 @@ function plot_fluence(paras)
 
 % calculate .. using Green function
 A = 100;
-A_green = 1e3;
+A_green = 1;
 for zi = 0:60
     for ri = -45:45
         pBulk.z = zi;
@@ -122,11 +123,13 @@ az = 0;
 el = 90;
  view(az, el);
  colormap(hot);
+ 
 caxis([low high])
-% colorbar
-% h = colorbar;
-% set(h, 'ylim', [low high])
-
+hCB = findobj(paras.uiPanel, 'tag', 'Colorbar');% avoid overlap of colorbars
+delete(hCB);
+h = colorbar('Parent',paras.uiPanel,'Position', [0.85 0.16 0.0401 0.72]);
+set(h, 'ylim', [low high])
+ 
 % calculate the product  
 H = A_green* G(vessel.z + 1, vessel.r + 46) * mua_vessel;
 % text(vessel.r+30,vessel.z+6,200,['H = \mu_a_v x Fluence_b' ],...
@@ -143,10 +146,43 @@ vesselColor =( 1- (mua_vessel-(low_muaV-0.01))./(0.01+high_muaV-low_muaV ))...
 plot3(vessel.r,vessel.z,high, 'Marker', 'o','MarkerSize',10,...
     'MarkerFaceColor', vesselColor, 'MarkerEdgeColor', 'r')
 drawnow;
+hold off
+%------------------ calculate ultrasound signal level ------------------%
+num_wav = 27;
+wav = linspace(650,910,num_wav);
+ 
+mus_bulk_noa = (wav / 1000).^(-b);
+
+for ii = 1:num_wav
+    mua_vessel(ii) = get_mua_vessel(oxy, wav(ii));
+    mua_bulk_witha(ii) = get_mua_bulk(a*c_HHb_bulk, a*c_OHb_bulk, ...
+        a*c_H2O_bulk, a*c_Lipid_bulk, wav(ii));
+    mu_eff_bulk(ii) = sqrt(3* mua_bulk_witha(ii)* mus_bulk_noa(ii));
+    
+end
+
+ 
+for ii = 1:num_wav     
+ 
+    %     [rl, rb] =  dis_semiinfinite(vessel, laser);
+    %      G(jj, ii) = Green_semi(mu_eff_bulk(ii), rl, rb);
+         G(ii) = cal_fluence(mu_eff_bulk(ii),vessel.z, ...
+             sqrt(laser.r.^2 + vessel.z .^2));
+         H_us(ii) = G(ii) * mua_vessel(ii);
+    
+    
+end
+minH_us = min(H_us);
+maxH_us = max(H_us);
+A = (H - minH_us) / (maxH_us - minH_us);
+% -------------------  
+
 
 %% generate sound
-if paras.IsSound 
-   Vol =  0.1*exp(H*100);
-   generate_sound(Vol);
+if isfield(paras, 'isSliderWav')
+    if paras.IsSound 
+       Vol =  exp(A/2);
+       generate_sound(Vol);
+    end
 end
 end

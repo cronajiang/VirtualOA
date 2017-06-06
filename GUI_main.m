@@ -237,7 +237,9 @@ if get(handles.radiobuttonSingleForward,'Value') == 1
         handles.plotF = handles.ref;
         handles.plotF.wav = get(handles.sliderWav, 'Value');
         handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
-        axes(handles.axesFluence)
+%         axes(handles.axesFluence)
+        handles.plotF.axesFluence = handles.axesFluence;
+        handles.plotF.uiPanel = handles.uipanelFluence;
         plot_fluence(handles.plotF)
     end
     % ----------------- plot fluence END ------------------%
@@ -315,8 +317,9 @@ elseif get(handles.radiobuttonContForward,'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
     handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
-    axes(handles.axesFluence)
-    cla
+%         axes(handles.axesFluence)
+        handles.plotF.axesFluence = handles.axesFluence;
+        handles.plotF.uiPanel = handles.uipanelFluence;
     plot_fluence(handles.plotF)
     end
     % ----------------- plot fluence END ------------------%
@@ -590,8 +593,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
         handles.plotF = handles.cont;
         handles.plotF.wav = get(handles.sliderWav, 'Value');
         handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
-        axes(handles.axesFluence)
-        cla
+    %         axes(handles.axesFluence)
+        handles.plotF.axesFluence = handles.axesFluence;
+        handles.plotF.uiPanel = handles.uipanelFluence;
         plot_fluence(handles.plotF)
     end
     % ----------------- plot fluence END ------------------% 
@@ -846,8 +850,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
     handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
-    axes(handles.axesFluence)
-    cla
+  %         axes(handles.axesFluence)
+        handles.plotF.axesFluence = handles.axesFluence;
+        handles.plotF.uiPanel = handles.uipanelFluence;
     plot_fluence(handles.plotF)
     end
     % ----------------- plot fluence END ------------------% 
@@ -946,8 +951,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
     handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
-    axes(handles.axesFluence)
-    cla
+%         axes(handles.axesFluence)
+        handles.plotF.axesFluence = handles.axesFluence;
+        handles.plotF.uiPanel = handles.uipanelFluence;
     plot_fluence(handles.plotF)
     end
     % ----------------- plot fluence END ------------------% 
@@ -1177,8 +1183,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
     handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
-    axes(handles.axesFluence)
-    cla
+%         axes(handles.axesFluence)
+        handles.plotF.axesFluence = handles.axesFluence;
+        handles.plotF.uiPanel = handles.uipanelFluence;
     plot_fluence(handles.plotF)
     end
     % ----------------- plot fluence END ------------------% 
@@ -1274,8 +1281,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
     handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
-    axes(handles.axesFluence)
-    cla
+%         axes(handles.axesFluence)
+        handles.plotF.axesFluence = handles.axesFluence;
+        handles.plotF.uiPanel = handles.uipanelFluence;
     plot_fluence(handles.plotF)
     end
     % ----------------- plot fluence END ------------------% 
@@ -1393,8 +1401,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
     handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
-    axes(handles.axesFluence)
-    cla
+%         axes(handles.axesFluence)
+        handles.plotF.axesFluence = handles.axesFluence;
+        handles.plotF.uiPanel = handles.uipanelFluence;
     plot_fluence(handles.plotF)
     end
     % ----------------- plot fluence END ------------------% 
@@ -1506,8 +1515,9 @@ if get(handles.radiobuttonContForward,'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
     handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
-    axes(handles.axesFluence)
-    cla
+%         axes(handles.axesFluence)
+        handles.plotF.axesFluence = handles.axesFluence;
+        handles.plotF.uiPanel = handles.uipanelFluence;
     plot_fluence(handles.plotF)
     end
     % ----------------- plot fluence END ------------------% 
@@ -1730,10 +1740,10 @@ if get(handles.radiobuttonSingleForward, 'Value') == 1
              handles.plotF.max_sig = max(temp_sig);
              handles.plotF.min_sig = min(temp_sig);
             
-            
-         
-        axes(handles.axesFluence)
-        cla
+           handles.plotF.isSliderWav = 1; 
+    %         axes(handles.axesFluence)
+        handles.plotF.axesFluence = handles.axesFluence;
+        handles.plotF.uiPanel = handles.uipanelFluence;
         plot_fluence(handles.plotF)
      end
 
@@ -1746,8 +1756,10 @@ if get(handles.radiobuttonPlotFluence, 'Value') == 1
     handles.plotF = handles.cont;
     handles.plotF.wav =  handles.wav;
     handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
-    axes(handles.axesFluence)
-    cla
+%         axes(handles.axesFluence)
+    handles.plotF.isSliderWav = 1;
+        handles.plotF.axesFluence = handles.axesFluence;
+        handles.plotF.uiPanel = handles.uipanelFluence;
     plot_fluence(handles.plotF) 
 end
     % ----------------- plot fluence END ------------------% 
@@ -1911,8 +1923,9 @@ switch mode
     handles.plotF = handles.cont;
     handles.plotF.wav = get(handles.sliderWav, 'Value');
     handles.plotF.IsSound = get(handles.radiobuttonIsSound,'Value');
-    axes(handles.axesFluence)
-    cla
+%         axes(handles.axesFluence)
+        handles.plotF.axesFluence = handles.axesFluence;
+        handles.plotF.uiPanel = handles.uipanelFluence;
     plot_fluence(handles.plotF)
    end
     % ----------------- plot fluence END ------------------%
@@ -2300,7 +2313,7 @@ h33 = uipanel(...
 'UserData',[],...
 'Clipping','on',...
 'Position', r.*  [300 330 400 260],...
-'Tag','uipanel3',...
+'Tag','uipanelFluence',...
 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
 set(h33, 'Units', 'Normalized');
 
@@ -2310,7 +2323,7 @@ appdata.lastValidTag = 'axesFluence';
 h28 = axes(...
 'Parent',h33,...
 'Units','pixels',...
-'Position', r.*  [135  30 220 180],...%r.*  [35 35 225 185],...
+'Position', r.*  [130  40 200 180],...%r.*  [35 35 225 185],...
 'CameraPosition',[0.5 0.5 9.16025403784439],...
 'CameraPositionMode',get(0,'defaultaxesCameraPositionMode'),...
 'Color',get(0,'defaultaxesColor'),...
