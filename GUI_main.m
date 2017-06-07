@@ -270,6 +270,7 @@ if get(handles.radiobuttonSingleForward,'Value') == 1
     % -----------------  Single Forward End --------------------- %
 
     % --------------------- DISPLAY RESULT -----------------------%
+    
         axes(handles.axesForwardResult)
         cla
 %      plot(handles.ref.ForwardResult,'-ob')
@@ -282,6 +283,8 @@ if get(handles.radiobuttonSingleForward,'Value') == 1
     legend('reference signal','noisy signal')
     ylabel('value')
     xlabel('data index')
+    xlim_temp = get(gca, 'xlim');
+%     patch([0 get(gca, 'xlim') 0.5 0], [0 0 0.5 0.5],'y')
     % ------------------  DISPLAY RESULT END ---------------------%
     
  %----------------- plot mu - C_chromophores ---------------------%

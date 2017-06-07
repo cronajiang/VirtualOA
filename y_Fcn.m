@@ -41,7 +41,8 @@ for jj  = 1:num_lasers
 end
 
 for jj = 1: num_lasers
-    F(num_wav * (jj-1)+1: num_wav*jj) =  H(jj,:)./mean(H(jj,:)); % ratio data
+%     F(num_wav * (jj-1)+1: num_wav*jj) =  H(jj,:)./mean(H(jj,:)); % ratio data
+    F(num_wav * (jj-1)+1: num_wav*jj) =  H(jj,:)./H(jj,1);
 end
 % F = log(F);
 
