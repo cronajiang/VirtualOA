@@ -33,11 +33,7 @@ draw_dis(laser(1),vessel)
 % boundaries
 plot([bound.r(1):1:bound.r(2)],zeros(1,bound.r(2)-bound.r(1)+1), '-k');
 
-% vessel
-plot(vessel.r,vessel.z, 'Marker', 'o','MarkerSize',8, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r')
-text(vessel.r+15,vessel.z+5,'Blood vessel','HorizontalAlignment','right','Color','k')
-str_coor = ['(' num2str(vessel.r) ',' num2str(vessel.z) ')'];
-text(laser(1).r+6,vessel.z+10,str_coor,'HorizontalAlignment','right','Color','k')
+
 
 %laser 1
 plot(laser(1).r,laser(1).z, 'Marker', 'o','MarkerSize',7, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'y')
@@ -60,6 +56,18 @@ if num_lasers>2
 allLasers_r = linspace(laser(1).r, laser(2).r, num_lasers);
 plot(allLasers_r(2:end-1),0,'Marker', 'o','MarkerSize',5, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'k')
 end
+
+% vessel
+plot(vessel.r,vessel.z, 'Marker', 'o','MarkerSize',8, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r')
+str_coor = ['(' num2str(vessel.r) ',' num2str(vessel.z) ')'];
+if vessel.z<45
+    text(vessel.r+15,vessel.z+5,'Blood vessel','HorizontalAlignment','right','Color','k')
+    text(laser(1).r+5,vessel.z+10,str_coor,'HorizontalAlignment','right','Color','k')
+else
+    text(vessel.r+15,vessel.z-11,'Blood vessel','HorizontalAlignment','right','Color','k')
+    text(laser(1).r+5,vessel.z-6,str_coor,'HorizontalAlignment','right','Color','k')
+
+end
  
 % draw distance
 function draw_dis(p1,p2)
@@ -68,7 +76,7 @@ y1 = p1.z;
 x2 = p2.r;
 y2 = p2.z;
 dis = sqrt((x1-x2)^2+(y1-y2)^2);
-if x1==x2;
+if x1==x2
     plot([x1,x1],[min(y1,y2),max(y1,y2)], '-','LineWidth',1)
 else
     x = [min(x1,x2):max(x1,x2)];
@@ -76,6 +84,6 @@ else
     plot(x, y, '-','LineWidth',1)
 end
 
-text((x1+x2)/2,(y1+y2)/2,['D = ' num2str(dis,2)],'HorizontalAlignment','left','Color','b')
+text((x1+x2)/2-4,(y1+y2)/2,['D=' num2str(dis,2)],'HorizontalAlignment','left','Color','b')
 axis on
  
