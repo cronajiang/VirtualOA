@@ -33,4 +33,5 @@ if num_lasers > 1
 end  
 extraPara.d = sqrt(allLasers_r.^2 + vessel.z .^2);
 extraPara.z = vessel.z;
+extraPara.wavList = paras.wavList;
 rData=y_Fcn(ref','', extraPara); 

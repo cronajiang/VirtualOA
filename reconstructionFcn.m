@@ -48,6 +48,7 @@ function x = reconstructionFcn(paras, rDataNoise)
     end  
     extraPara.d = sqrt(allLasers_r.^2 + vessel.z .^2);
     extraPara.z = vessel.z;
+    extraPara.wavList = paras.wavList;
 %     for ii = 1: num_lasers
 %         Laser.z = 0;
 %         Laser.r = allLasers_r(ii);

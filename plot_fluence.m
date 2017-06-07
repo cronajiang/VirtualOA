@@ -181,8 +181,40 @@ A = (H - minH_us) / (maxH_us - minH_us);
 %% generate sound
 if isfield(paras, 'isSliderWav')
     if paras.IsSound 
-       Vol =  exp(A/2);
+        Vol =  exp(A/2);
+        for ii = 1:3
+        
+        
+       
+       set(paras.axesFluence,'visible','off')
+       
+%         pause(0.01)
        generate_sound(Vol);
+       set(paras.axesFluence,'visible','on')
+       pause(0.02)
+       
+       
+        end
     end
 end
+end
+
+function generate_sound(A)
+    amp = [1 0.5 0.25 0.125 0.125/2] .*0.8;
+    freq = [110 220 330 440 550]/4;
+    x = -1:0.002:1;
+    Y = 0;
+    for ii = 1: 5
+
+        Y = Y + amp(ii)*sin(x.*freq(ii)*2*pi) .* gaussmf(x,[0.8 0]);
+    end
+%     space = zeros(1,501);
+%     Y = [Y space  Y space   Y  ];
+    %%
+
+    Y = Y.*A;
+ 
+    player = audioplayer(Y ,8192);
+    play(player);
+ pause(0.02)
 end

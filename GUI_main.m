@@ -57,6 +57,13 @@ set(handles.P1,'Parent',handles.tab1,'Units','Normalized')
 set(handles.P2,'Parent',handles.tab2,'Units','Normalized')
 set(handles.P3,'Parent',handles.tab3,'Units','Normalized')
 
+% --------  add OA equation START--------------- %
+axes(handles.axesFluenceEq)
+I = imread('oa_equation.png');
+imshow(I)
+axis off
+
+% --------  add OA equation END --------------- %
 %set( findall( hObject, '-property', 'Units' ), 'Units', 'Normalized' )
 % --------------  PARAMETERS ASSIGNMENT -------------------- % 
 % set number of lasers and geo 
@@ -200,11 +207,17 @@ else
 end
 % ----------------  plot_geo END-----------------%
 
-
 if get(handles.radiobuttonSingleForward,'Value') == 1
      
     
     % --------------  PARAMETERS ASSIGNMENT -------------------- % 
+    % ----------------- get wavelengths START --------------%
+    wav_min = str2double(get(handles.editWavFrom,'String'));
+    wav_max = str2double(get(handles.editWavTo,'String'));
+    wav_step = str2double(get(handles.editWavStep,'String'));
+    handles.wavList = wav_min: wav_step: wav_max;
+    % ----------------- get wavelengths END  ---------------%
+    handles.ref.wavList = handles.wavList;
     handles.ref.StOv = str2double(get(handles.editStOvRef, 'String'));
     handles.ref.TCHb = str2double(get(handles.editTHbRef, 'String'));
     handles.ref.StOb = str2double(get(handles.editStObRef, 'String'));
@@ -217,7 +230,7 @@ if get(handles.radiobuttonSingleForward,'Value') == 1
     handles.ref.a = str2double(get(handles.editaRef, 'String'));
     handles.ref.b = str2double(get(handles.editbRef, 'String'));
     handles.NoiseLevel = 0.01*str2double(get(handles.editNoiseLevel, 'String'));
-   set(handles.textContNoiseLevel, 'String', num2str(100*handles.NoiseLevel));
+    set(handles.textContNoiseLevel, 'String', num2str(100*handles.NoiseLevel));
     % range of noise level = [0, 10]
     if handles.NoiseLevel > 0.1
         handles.NoiseLevel = 0.1;
@@ -295,6 +308,13 @@ if get(handles.radiobuttonSingleForward,'Value') == 1
 elseif get(handles.radiobuttonContForward,'Value') == 1
     %%%%%%%%%%%%%%%%%%%%%%%  Continuous mode STARR %%%%%%%%%%%%%%%%%%%%%%%     
     % --------------  PARAMETERS ASSIGNMENT -------------------- % 
+    % ----------------- get wavelengths START --------------%
+    wav_min = str2double(get(handles.editWavFrom,'String'));
+    wav_max = str2double(get(handles.editWavTo,'String'));
+    wav_step = str2double(get(handles.editWavStep,'String'));
+    handles.wavList = wav_min: wav_step: wav_max;
+    % ----------------- get wavelengths END  ---------------%
+    handles.cont.wavList = handles.wavList;
     handles.cont.StOv = get(handles.sliderStOv, 'Value');
     
     handles.cont.TCHb = get(handles.sliderTCHb, 'Value');
@@ -361,7 +381,13 @@ elseif get(handles.radiobuttonContForward,'Value') == 1
 elseif  get(handles.radiobuttonRec,'Value') == 1
      
     % --------------  PARAMETERS ASSIGNMENT -------------------- % 
-    
+        % ----------------- get wavelengths START --------------%
+    wav_min = str2double(get(handles.editWavFrom,'String'));
+    wav_max = str2double(get(handles.editWavTo,'String'));
+    wav_step = str2double(get(handles.editWavStep,'String'));
+    handles.wavList = wav_min: wav_step: wav_max;
+    % ----------------- get wavelengths END  ---------------%
+    handles.init.wavList = handles.wavList;
     handles.init.StOv = str2double(get(handles.editStOvInit, 'String'));
     
     handles.init.TCHb = str2double(get(handles.editTCHbInit, 'String'));
@@ -572,7 +598,14 @@ if get(handles.radiobuttonContForward,'Value') == 1
      
 %%%%%%%%%%%%%%%%%%%%%%%  Continuous mode START %%%%%%%%%%%%%%%%%%%%%%%     
     % --------------  PARAMETERS ASSIGNMENT -------------------- % 
-    handles.cont.StOv = get(handles.sliderStOv, 'Value');
+        % ----------------- get wavelengths START --------------%
+    wav_min = str2double(get(handles.editWavFrom,'String'));
+    wav_max = str2double(get(handles.editWavTo,'String'));
+    wav_step = str2double(get(handles.editWavStep,'String'));
+    handles.wavList = wav_min: wav_step: wav_max;
+    % ----------------- get wavelengths END  ---------------%
+    handles.cont.wavList = handles.wavList;
+%     handles.cont.StOv = get(handles.sliderStOv, 'Value');
     handles.cont.TCHb = get(handles.sliderTCHb, 'Value');
     handles.cont.StOb = get(handles.sliderStOb, 'Value');
     handles.cont.COHb = handles.cont.StOb * handles.cont.TCHb;
@@ -830,8 +863,15 @@ if get(handles.radiobuttonContForward,'Value') == 1
      
 %%%%%%%%%%%%%%%%%%%%%%%  Continuous mode START %%%%%%%%%%%%%%%%%%%%%%%     
     % --------------  PARAMETERS ASSIGNMENT -------------------- % 
+    % ----------------- get wavelengths START --------------%
+    wav_min = str2double(get(handles.editWavFrom,'String'));
+    wav_max = str2double(get(handles.editWavTo,'String'));
+    wav_step = str2double(get(handles.editWavStep,'String'));
+    handles.wavList = wav_min: wav_step: wav_max;
+    % ----------------- get wavelengths END  ---------------%
+    handles.cont.wavList = handles.wavList;
     handles.cont.StOv = get(handles.sliderStOv, 'Value');
-    handles.cont.TCHb = get(handles.sliderTCHb, 'Value');
+%     handles.cont.TCHb = get(handles.sliderTCHb, 'Value');
     handles.cont.StOb = get(handles.sliderStOb, 'Value');
     handles.cont.COHb = handles.cont.StOb * handles.cont.TCHb;
     handles.cont.CHHb = handles.cont.TCHb - handles.cont.COHb;
@@ -926,9 +966,16 @@ if get(handles.radiobuttonContForward,'Value') == 1
      
 %%%%%%%%%%%%%%%%%%%%%%%  Continuous mode STARR %%%%%%%%%%%%%%%%%%%%%%%     
     % --------------  PARAMETERS ASSIGNMENT -------------------- % 
+    % ----------------- get wavelengths START --------------%
+    wav_min = str2double(get(handles.editWavFrom,'String'));
+    wav_max = str2double(get(handles.editWavTo,'String'));
+    wav_step = str2double(get(handles.editWavStep,'String'));
+    handles.wavList = wav_min: wav_step: wav_max;
+    % ----------------- get wavelengths END  ---------------%
+    handles.cont.wavList = handles.wavList;
     handles.cont.StOv = get(handles.sliderStOv, 'Value');
     handles.cont.TCHb = get(handles.sliderTCHb, 'Value');
-    handles.cont.StOb = get(handles.sliderStOb, 'Value');
+%     handles.cont.StOb = get(handles.sliderStOb, 'Value');
     handles.cont.COHb = handles.cont.StOb * handles.cont.TCHb;
     handles.cont.CHHb = handles.cont.TCHb - handles.cont.COHb;
     handles.cont.CH2O = get(handles.sliderCH2O, 'value');
@@ -1162,6 +1209,13 @@ if get(handles.radiobuttonContForward,'Value') == 1
      
 %%%%%%%%%%%%%%%%%%%%%%%  Continuous mode STARR %%%%%%%%%%%%%%%%%%%%%%%     
     % --------------  PARAMETERS ASSIGNMENT -------------------- % 
+    % ----------------- get wavelengths START --------------%
+    wav_min = str2double(get(handles.editWavFrom,'String'));
+    wav_max = str2double(get(handles.editWavTo,'String'));
+    wav_step = str2double(get(handles.editWavStep,'String'));
+    handles.wavList = wav_min: wav_step: wav_max;
+    % ----------------- get wavelengths END  ---------------%
+    handles.cont.wavList = handles.wavList;
     handles.cont.StOv = get(handles.sliderStOv, 'Value');
   handles.cont.TCHb = get(handles.sliderTCHb, 'Value');
     handles.cont.StOb = get(handles.sliderStOb, 'Value');
@@ -1259,6 +1313,13 @@ if get(handles.radiobuttonContForward,'Value') == 1
      
 %%%%%%%%%%%%%%%%%%%%%%%  Continuous mode STARR %%%%%%%%%%%%%%%%%%%%%%%     
     % --------------  PARAMETERS ASSIGNMENT -------------------- % 
+        % ----------------- get wavelengths START --------------%
+    wav_min = str2double(get(handles.editWavFrom,'String'));
+    wav_max = str2double(get(handles.editWavTo,'String'));
+    wav_step = str2double(get(handles.editWavStep,'String'));
+    handles.wavList = wav_min: wav_step: wav_max;
+    % ----------------- get wavelengths END  ---------------%
+    handles.cont.wavList = handles.wavList;
     handles.cont.StOv = get(handles.sliderStOv, 'Value');
     handles.cont.TCHb = get(handles.sliderTCHb, 'Value');
     handles.cont.StOb = get(handles.sliderStOb, 'Value');
@@ -1269,7 +1330,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
 
     % following paras are the same with ref
     handles.cont.a = get(handles.slidera, 'Value');
-    handles.cont.b = get(handles.sliderb, 'Value');
+%     handles.cont.b = get(handles.sliderb, 'Value');
 
     handles.cont.vesselpos = handles.Vessel.pos;
     handles.cont.laserpos = [handles.Laser1.pos ; handles.Laser2.pos]; %(r,z) --> (x,y)
@@ -1379,8 +1440,15 @@ if get(handles.radiobuttonContForward,'Value') == 1
      
 %%%%%%%%%%%%%%%%%%%%%%%  Continuous mode STARR %%%%%%%%%%%%%%%%%%%%%%%     
     % --------------  PARAMETERS ASSIGNMENT -------------------- % 
+    % ----------------- get wavelengths START --------------%
+    wav_min = str2double(get(handles.editWavFrom,'String'));
+    wav_max = str2double(get(handles.editWavTo,'String'));
+    wav_step = str2double(get(handles.editWavStep,'String'));
+    handles.wavList = wav_min: wav_step: wav_max;
+    % ----------------- get wavelengths END ----------------%
+    handles.cont.wavList = handles.wavList;
     handles.cont.StOv = get(handles.sliderStOv, 'Value');
-  handles.cont.TCHb = get(handles.sliderTCHb, 'Value');
+    handles.cont.TCHb = get(handles.sliderTCHb, 'Value');
     handles.cont.StOb = get(handles.sliderStOb, 'Value');
     handles.cont.COHb = handles.cont.StOb * handles.cont.TCHb;
     handles.cont.CHHb = handles.cont.TCHb - handles.cont.COHb;
@@ -1493,13 +1561,20 @@ if get(handles.radiobuttonContForward,'Value') == 1
      
 %%%%%%%%%%%%%%%%%%%%%%%  Continuous mode STARR %%%%%%%%%%%%%%%%%%%%%%%     
     % --------------  PARAMETERS ASSIGNMENT -------------------- % 
+        % ----------------- get wavelengths START --------------%
+    wav_min = str2double(get(handles.editWavFrom,'String'));
+    wav_max = str2double(get(handles.editWavTo,'String'));
+    wav_step = str2double(get(handles.editWavStep,'String'));
+    handles.wavList = wav_min: wav_step: wav_max;
+    % ----------------- get wavelengths END  ---------------%
+    handles.cont.wavList = handles.wavList;
     handles.cont.StOv = get(handles.sliderStOv, 'Value');
-  handles.cont.TCHb = get(handles.sliderTCHb, 'Value');
+    handles.cont.TCHb = get(handles.sliderTCHb, 'Value');
     handles.cont.StOb = get(handles.sliderStOb, 'Value');
     handles.cont.COHb = handles.cont.StOb * handles.cont.TCHb;
     handles.cont.CHHb = handles.cont.TCHb - handles.cont.COHb;
     handles.cont.CH2O = get(handles.sliderCH2O, 'value');
-    handles.cont.CLipid = get(handles.sliderCLipid, 'value');
+%     handles.cont.CLipid = get(handles.sliderCLipid, 'value');
 
     % following paras are the same with ref
     handles.cont.a = get(handles.slidera, 'Value');
@@ -1858,6 +1933,9 @@ set(handles.radiobuttonPlotFluence,'Enable','on');
 set(handles.radiobuttonPlotMuaC,'Enable','off');
 set(handles.radiobuttonPlotUltraSignal,'Enable','on');
 
+        set(handles.editWavFrom, 'Enable','Off');
+        set(handles.editWavTo, 'Enable','Off');
+        set(handles.editWavStep, 'Enable','Off');
 switch mode
     case 'Forward Simulation'
         set(handles.textContDis1,'Visible','Off');
@@ -1868,9 +1946,22 @@ switch mode
         set(handles.radiobuttonPlotUltraSignal,'Enable','on');
 
         set(handles.radiobuttonPlotMuaC,'Enable','on')
+        
+        set(handles.editWavFrom, 'Enable','On');
+        set(handles.editWavTo, 'Enable','On');
+        set(handles.editWavStep, 'Enable','On');
+         
     case 'Manual Fitting'
+        
       %%%%%%%%%%%%%%%%%%%%%%%  Continuous mode STARR %%%%%%%%%%%%%%%%%%%%%%%     
     % --------------  PARAMETERS ASSIGNMENT -------------------- % 
+        % ----------------- get wavelengths START --------------%
+    wav_min = str2double(get(handles.editWavFrom,'String'));
+    wav_max = str2double(get(handles.editWavTo,'String'));
+    wav_step = str2double(get(handles.editWavStep,'String'));
+    handles.wavList = wav_min: wav_step: wav_max;
+    % ----------------- get wavelengths END  ---------------%
+    handles.cont.wavList = handles.wavList;
     handles.cont.StOv = get(handles.sliderStOv, 'Value');
     
     handles.cont.TCHb = get(handles.sliderTCHb, 'Value');
@@ -1879,7 +1970,7 @@ switch mode
     handles.cont.CHHb = handles.cont.TCHb - handles.cont.COHb;
     
     handles.cont.CH2O = get(handles.sliderCH2O, 'Value');
-        handles.cont.CLipid = get(handles.sliderCLipid, 'value');
+    handles.cont.CLipid = get(handles.sliderCLipid, 'value');
 
     % following paras are the same with ref
     handles.cont.a = get(handles.slidera, 'Value');
@@ -2144,37 +2235,116 @@ h5 = uicontrol(...
 'Style','radiobutton',...
 'Tag','radiobuttonRec',...
 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
+set(h5, 'Units', 'Normalized');
 
 appdata = [];
 appdata.lastValidTag = 'uipanel4';
-set(h5, 'Units', 'Normalized');
 
 h6 = uibuttongroup(...
 'Parent',h1,...
 'Units','pixels',...
 'Title',{  'Load example tissue properties' },...
 'Clipping','on',...
-'Position', r.*  [50 510 450 50],...
+'Position', r.*  [50 510 150 50],...
 'Tag','uipanel4',...
 'SelectedObject',[],...
 'SelectionChangeFcn',@(hObject,eventdata)GUI_main('uipanel4_SelectionChangeFcn',get(hObject,'SelectedObject'),eventdata,guidata(get(hObject,'SelectedObject'))),...
 'OldSelectedObject',[],...
 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
 set(h6, 'Units', 'Normalized');
-% appdata = [];
-% appdata.lastValidTag = 'radiobuttonHead';
-% set(h6, 'Units', 'Normalized');
-% 
-% h7 = uicontrol(...
-% 'Parent',h6,...
-% 'Units','pixels',...
-% 'Position', r.*  [160 5 150 30],...
-% 'String','Head',...
-% 'Value',0,...
-% 'Style','radiobutton',...
-% 'Tag','radiobuttonBreast',...
-% 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
-% set(h7, 'Units', 'Normalized');
+
+appdata = [];
+appdata.lastValidTag = 'uipanel5';
+
+h7 = uibuttongroup(...
+'Parent',h1,...
+'Units','pixels',...
+'Title',{  'Set wavelengths (within [650,910] nm)' },...
+'Clipping','on',...
+'Position', r.*  [220 510 280 50],...
+'Tag','uipanel5',...
+'SelectedObject',[],...
+'SelectionChangeFcn',@(hObject,eventdata)GUI_main('uipanel5_SelectionChangeFcn',get(hObject,'SelectedObject'),eventdata,guidata(get(hObject,'SelectedObject'))),...
+'OldSelectedObject',[],...
+'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
+set(h7, 'Units', 'Normalized');
+
+
+
+appdata = [];
+appdata.lastValidTag = 'textSetWavFrom';
+
+h7_1 = uicontrol(...
+'Parent',h7,...
+'Units','pixels',...
+'Position', r.*  [10 10  50 20],...
+'String','From',...
+'Style','text',...
+'Tag','textSetWavFrom',...
+'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
+set(h7_1, 'Units', 'Normalized');
+
+appdata = [];
+appdata.lastValidTag = 'textSetWavTo';
+
+h7_1 = uicontrol(...
+'Parent',h7,...
+'Units','pixels',...
+'Position', r.*  [75 10  50 20],...a
+'String','to',...
+'Style','text',...
+'Tag','textSetWavTo',...
+'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
+set(h7_1, 'Units', 'Normalized');
+
+appdata = [];
+appdata.lastValidTag = 'textSetWavStep';
+
+h7_1 = uicontrol(...
+'Parent',h7,...
+'Units','pixels',...
+'Position', r.*  [155 10  50 20],...
+'String','at a step of',...
+'Style','text',...
+'Tag','textSetWavStep',...
+'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
+set(h7_1, 'Units', 'Normalized');
+
+appdata = [];
+appdata.lastValidTag = 'editWavFrom';
+
+h7_2 = uicontrol(...
+'Parent',h7,...
+'Units','pixels',...
+'Position', r.*  [53 10  34 20],...
+'String','650',...
+'Style','edit',...
+'Tag','editWavFrom');
+set(h7_2, 'Units', 'Normalized');
+
+appdata = [];
+appdata.lastValidTag = 'editWavTo';
+
+h7_3 = uicontrol(...
+'Parent',h7,...
+'Units','pixels',...
+'Position', r.*  [114 10  34 20],...
+'String','910',...
+'Style','edit',...
+'Tag','editWavTo');
+set(h7_3, 'Units', 'Normalized');
+
+appdata = [];
+appdata.lastValidTag = 'editWavStep';
+
+h7_4 = uicontrol(...
+'Parent',h7,...
+'Units','pixels',...
+'Position', r.*  [210 10  34 20],...
+'String','10',...
+'Style','edit',...
+'Tag','editWavStep');
+set(h7_4, 'Units', 'Normalized');
 
 appdata = [];
 appdata.lastValidTag = 'radiobuttonForearm';
@@ -2338,6 +2508,26 @@ h28 = axes(...
 set(h28, 'Units', 'Normalized');
 
 appdata = [];
+appdata.lastValidTag = 'axesFluenceEq';
+
+h28_2 = axes(...
+'Parent',h33,...
+'Units','pixels',...
+'Position', r.*  [20  228 100 18],...%r.*  [35 35 225 185],...
+'CameraPosition',[0.5 0.5 9.16025403784439],...
+'CameraPositionMode',get(0,'defaultaxesCameraPositionMode'),...
+'Color',get(0,'defaultaxesColor'),...
+'ColorOrder',get(0,'defaultaxesColorOrder'),...
+'LooseInset',[15.7741071428571 3.07627118644068 11.5272321428571 2.09745762711865],...
+'XColor',get(0,'defaultaxesXColor'),...
+'YColor',get(0,'defaultaxesYColor'),...
+'ZColor',get(0,'defaultaxesZColor'),...
+'Tag','axesFluenceEq',...
+'UserData',[],...
+'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
+set(h28_2, 'Units', 'Normalized');
+
+appdata = [];
 appdata.lastValidTag = 'radiobuttonIsSound';
 
 h28_1 = uicontrol(...
@@ -2428,7 +2618,7 @@ h38 = uicontrol(...
 'Parent',h10,...
 'Units','pixels',...
 'Position', r.*  [20 255 130 50],...
-'String',{'Normalized degree';' of ultrasound signal';' for different distances'},...
+'String',{'Normalized degree';' of ultrasound signal';' for different distances [mm]'},...
 'Style','text',...
 'Tag','text62',...
 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );

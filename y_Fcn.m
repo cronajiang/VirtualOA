@@ -19,8 +19,8 @@ ac_Lipid_bulk = x(4);
 oxy = x(5);
 b = x(6);
 num_lasers = paras.numLaser;
-num_wav = 27;
-wav = linspace(650,910,num_wav);
+wav = paras.wavList;
+num_wav = length(wav);
 mus_bulk_noa = (wav / 1000).^(-b);
 
 for ii = 1:num_wav
