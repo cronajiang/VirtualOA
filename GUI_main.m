@@ -49,8 +49,8 @@ function GUI_main_OpeningFcn(hObject, eventdata, handles, varargin)
 %%%%%%%%%%%%%%%%%%%%%  initialization  %%%%%%%%%%%%%%%%%%%%%
 % ----------------- create multi tabs panel for display ---------------- %
 handles.tgroup = uitabgroup('Parent', handles.uipanelTabs,'TabLocation', 'top','Units','Normalized');
-handles.tab1 = uitab('Parent', handles.tgroup, 'Title', 'Forward result');
-handles.tab2 = uitab('Parent', handles.tgroup, 'Title', 'Reconstruction result');
+handles.tab1 = uitab('Parent', handles.tgroup, 'Title', 'Forward simulation');
+handles.tab2 = uitab('Parent', handles.tgroup, 'Title', 'Reconstruction results');
 handles.tab3 = uitab('Parent', handles.tgroup, 'Title', 'Spectra of coefficients');
 % Place panels into each tab
 set(handles.P1,'Parent',handles.tab1,'Units','Normalized')
@@ -271,20 +271,32 @@ if get(handles.radiobuttonSingleForward,'Value') == 1
 
     % --------------------- DISPLAY RESULT -----------------------%
     
-        axes(handles.axesForwardResult)
-        cla
-%      plot(handles.ref.ForwardResult,'-ob')
-%     hold on
-%     plot(handles.ref.rDataRefNoise,'-*r')
-   semilogy(handles.ref.ForwardResult,'-ob')
+    axes(handles.axesForwardResult)
+    cla
+    semilogy(handles.ref.ForwardResult,'-ob')
     hold on
-    semilogy(handles.ref.rDataRefNoise,'-*r')
-     
-    legend('reference signal','noisy signal')
+    nn = length(handles.wavList);
+    numLasers = handles.numLasers;
+    COLORs=hsv(numLasers);
+    xlim([0 nn*numLasers])
+    ymin = min([handles.ref.ForwardResult handles.ref.rDataRefNoise]);
+    ymax = max([handles.ref.ForwardResult handles.ref.rDataRefNoise]);
+    ylim([ymin ymax]);
+    for ii = 1:numLasers
+        patch([ nn*(ii-1)   nn*(ii-1)...
+            nn*ii nn*ii], [ymin ymax ymax ymin],...
+            COLORs(ii,:),'FaceAlpha' ,0.05)
+        text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+    end
+    hf1 = semilogy(handles.ref.ForwardResult,'-ob');
+    hf2 = semilogy(handles.ref.rDataRefNoise,'-*r');
+    legend([hf1, hf2], {'reference signal','noisy reference'},...
+        'Location','northeastoutside')
     ylabel('value')
     xlabel('data index')
-    xlim_temp = get(gca, 'xlim');
-%     patch([0 get(gca, 'xlim') 0.5 0], [0 0 0.5 0.5],'y')
+      hold off 
     % ------------------  DISPLAY RESULT END ---------------------%
     
  %----------------- plot mu - C_chromophores ---------------------%
@@ -358,20 +370,61 @@ elseif get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
-        ylabel('value')
-        xlabel('data index')
-
+      
         if  isfield(handles, 'ref')
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.ref.ForwardResult,'-ob')
-            plot(handles.ref.rDataRefNoise,'-*r')
-            legend('manual fitting', 'reference', 'noisy reference')
+            cla
+            semilogy(handles.ref.ForwardResult,'-ob')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ymax = max([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+            hf1 = semilogy(handles.ref.ForwardResult,'-ob');
+            hf2 = semilogy(handles.ref.rDataRefNoise,'-*r');
+            hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
+                'manual fitting'},'Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+         
         else
-            plot(handles.cont.ForwardResult,'-oc')
-            %%plot(handles.cont.ForwardResult+noise,'-*r')
-     
-            legend('manual fitting')
+            cla
+            semilogy(handles.cont.ForwardResult,'-oc')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min( handles.cont.ForwardResult);
+            ymax = max(handles.cont.ForwardResult);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend(hf3, 'manual fitting','Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
             
+             hold off
         end
          
     if get(handles.radiobuttonPlotUltraSignal, 'Value') == 1
@@ -425,23 +478,6 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
     % ----------------- RECONSTRUCTION START ------------------- %
    if isfield(handles, 'ref')
   
-%       % get scaling factor 
-%             if handles.numLasers > 1
-%                 numWav = 27;    
-%                 factor_scl = ones(1,numWav).*mean(handles.ref.ForwardResult(1:numWav));
-%                 for jj = 2:handles.numLasers
-%                      
-%                     factor_scl((jj - 1)* numWav  + 1 :jj * numWav  ) = ...
-%                     ones(1,numWav ) .* ...
-%                     mean(handles.ref.ForwardResult((jj - 1)*numWav + 1 :jj *numWav )) ./ ...
-%                     mean(handles.ref.ForwardResult(1:numWav ));
-%                      
-%                 end
-%             else
-%                 factor_scl = ones(1,27);
-%             end
-%    
-%     handles.init.fac_scl = factor_scl;        
     handles.recResult = reconstructionFcn(handles.init, handles.ref.rDataRefNoise); % noisy reference forward result
     handles.rec.StOv = handles.recResult(5); 
     handles.rec.CHHb = handles.recResult(1)/100; % it is actually a* CHHb
@@ -467,57 +503,59 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
             a* handles.init.COHb * 10, ...
             a* handles.init.CH2O,...
             a* handles.init.CLipid,...
-            handles.init.StOv, ...     
             handles.init.b];
      a = handles.ref.a;   
      ref = [a* handles.ref.CHHb * 100,...
             a* handles.ref.COHb * 10, ...
             a* handles.ref.CH2O,...
             a* handles.ref.CLipid,...
-            handles.ref.StOv, ...
             handles.ref.b];
       axes(handles.axesRecResult)
       
-      plot(handles.recResult,'ob', 'MarkerSize',10)
+      plot(handles.recResult([1:4 6]),'ob', 'MarkerSize',10)
       hold on
       plot(ref,'*g', 'MarkerSize',10)
       plot(init,'rx', 'MarkerSize',10)
-      legend('reconstruction', 'reference', 'initial guess','Location','northwest')
-      Labels = {'a*C_{HHb}b', 'a*C_{OHb}b', 'a*C_{H2O}b', 'a*C_{Lipid}b','StOv', 'b'};
-      set(gca, 'XTick', [1:6], 'XTickLabel', Labels);
+      legend('reconstruction', 'reference', 'initial guess','Location','northeast')
+      Labels = {'a*C_{HHb, bulk}', 'a*C_{OHb, bulk}', 'a*C_{H2O, bulk}', ...
+          'a*C_{Lipid, bulk}', 'b'};
+      set(gca, 'XTick', [1:5], 'XTickLabel', Labels);
       ylabel('value')
       xlabel('parameters')
       hold off
        
       axes(handles.axesRecStO)
       cla
-      Labels = {'Reconstructed StOv'};
+      Labels = {'Oxygenation of blood vessel'};
       set(gca, 'XTick', 1, 'XTickLabel', Labels);
       ymax = 1;
       ymin = 0.3;
       hold on
-      plot([0:2],handles.ref.StOv*ones(size([0:2])),'--g','LineWidth',3);
-      plot([0:2],handles.init.StOv*ones(size([0:2])),'--r','LineWidth',3);
+      hf1 = plot([0:2],handles.ref.StOv*ones(size([0:2])),'--g','LineWidth',3);
+      hf2 = plot([0:2],handles.init.StOv*ones(size([0:2])),'--r','LineWidth',3);
       ylim([ymin ,ymax])
       set(gca,'ytick',[ymin:0.05:ymax]);
-      bar(handles.rec.StOv, 'BaseValue', ymin, 'FaceAlpha',.3,'EdgeAlpha',.3);
-%       text(1,handles.rec.StOv,1,num2str(handles.rec.StOv),'HorizontalAlignment','right','Color','k')
-title(['rec = ' num2str(handles.rec.StOv,3)])
+      hf3 = bar(handles.rec.StOv, 'BaseValue', ymin, 'FaceAlpha',.3,'EdgeAlpha',.3);
+      legend([hf1 hf2 hf3], {'reference','initial guess','reconstructed'},...
+           'Location','northeastoutside')
+       title(['reconstructed value = ' num2str(handles.rec.StOv,3)])
      %%% plot oxy for the bulk
        axes(handles.axesRecStOBulk)
        cla
-       Labels = {'Reconstructed StOb'};
+       Labels = {'Oxygenation of bulk'};
        set(gca, 'XTick', 1, 'XTickLabel', Labels);
        ymax = 1;
        ymin = 0.3;
        hold on
-       plot([0:2],handles.ref.StOb*ones(size([0:2])),'--g','LineWidth',3);
+       hf1 = plot([0:2],handles.ref.StOb*ones(size([0:2])),'--g','LineWidth',3);
        hold on
-       plot([0:2],handles.init.StOb*ones(size([0:2])),'--r','LineWidth',3);
+       hf2 = plot([0:2],handles.init.StOb*ones(size([0:2])),'--r','LineWidth',3);
        ylim([ymin ,ymax])
        set(gca,'ytick',[ymin:0.05:ymax]);
-       bar(handles.rec.StOb, 'BaseValue', ymin,'FaceAlpha',.3,'EdgeAlpha',.3);
- title(['rec = ' num2str(handles.rec.StOb,3)])
+       hf3 = bar(handles.rec.StOb, 'BaseValue', ymin,'FaceAlpha',.3,'EdgeAlpha',.3);
+       title(['reconstructed value = ' num2str(handles.rec.StOb,3)])
+       legend([hf1 hf2 hf3], {'reference','initial guess','reconstructed'},...
+           'Location','northeastoutside')
 
        % display forward result for reconstructed values
        % --------------  PARAMETERS ASSIGNMENT -------------------- % 
@@ -526,31 +564,42 @@ title(['rec = ' num2str(handles.rec.StOv,3)])
        handles.rec.numLasers = handles.numLasers;
        % --------------  PARAMETERS ASSIGNMENT END ---------------- % 
        % -----------------   Forward for rec Start ------------------- %
+       handles.rec.wavList = handles.wavList;
        handles.rec.RatioResult = forwardFcn(handles.rec);
        % -----------------  Forward for rec End --------------------- %
        % ----- plot forward result ----------------- % 
        axes(handles.axesForwardResult)
-       cla
-       hold on
-       ylabel('value')
-       xlabel('data index')
-       plot(handles.init.RatioResult,'-oc')
-       plot(handles.ref.ForwardResult,'-ob')
-       plot(handles.ref.rDataRefNoise,'-*r')
-       plot(handles.rec.RatioResult, '-*k')
+        cla
+            semilogy(handles.rec.RatioResult, '-*k')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ymax = max([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+             hf1 = semilogy(handles.init.RatioResult,'-oc');
+       hf2 = semilogy(handles.ref.ForwardResult,'-ob');
+       hf3 = semilogy(handles.ref.rDataRefNoise,'-*r');
+       hf4 = semilogy(handles.rec.RatioResult, '-*k');
 
-       legend('initial', 'reference', 'noisy reference', 'reconstructed')   
-
-% %         if  isfield(handles.init, 'fac_scl')
-%             plot(handles.init.RatioResult./handles.init.fac_scl,'-oc')
-%            plot(handles.ref.ForwardResult./handles.init.fac_scl,'-ob')
-%            plot(handles.ref.rDataRefNoise./handles.init.fac_scl,'-*r')
-%            plot(handles.rec.RatioResult./handles.init.fac_scl, '-*k')
-% 
-%            legend('initial', 'reference', 'noisy reference', 'reconstructed')
-%     %       title('scaled ratio data') 
-%         
-%        end
+       legend([hf1 hf2 hf3 hf4],...
+           {'initial', 'reference', 'noisy reference', 'reconstructed'},...   
+             'Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+            hold off
     % ---------------- DISPLAY RECONSTRUCTION RESULT END---------%
     
 else
@@ -647,27 +696,67 @@ if get(handles.radiobuttonContForward,'Value') == 1
     end
 %---------------- plot Ultrasound Signal END ---------------------%
 
-    % --------------------- DISPLAY RESULT -----------------------%
+   % --------------------- DISPLAY RESULT -----------------------%
         axes(handles.axesForwardResult)
-         cla
+        cla
         hold on
-            ylabel('value')
-    xlabel('data index')
+        ylabel('value')
+        xlabel('data index')
 
         if  isfield(handles, 'ref')
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.ref.ForwardResult,'-ob')
-            plot(handles.ref.rDataRefNoise,'-*r')
-             
-            
-            legend('manual fitting', 'reference', 'noisy reference')
-             
+            cla
+            semilogy(handles.ref.ForwardResult,'-ob')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ymax = max([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+            hf1 = semilogy(handles.ref.ForwardResult,'-ob');
+            hf2 = semilogy(handles.ref.rDataRefNoise,'-*r');
+            hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
+                'manual fitting'},'Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+         
         else
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.cont.ForwardResult+noise,'-*b')
-     
-            legend('manual fitting')
-             
+            cla
+            semilogy(handles.cont.ForwardResult,'-oc')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min( handles.cont.ForwardResult);
+            ymax = max(handles.cont.ForwardResult);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend(hf3, 'manual fitting','Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+            hold off
+            
         end
         
     % --------------------- DISPLAY RESULT END ------------------%
@@ -913,25 +1002,67 @@ if get(handles.radiobuttonContForward,'Value') == 1
 %---------------- plot Ultrasound Signal END ---------------------%
 
 
-    % --------------------- DISPLAY RESULT -----------------------%
+   % --------------------- DISPLAY RESULT -----------------------%
         axes(handles.axesForwardResult)
         cla
         hold on
-            ylabel('value')
-    xlabel('data index')
+        ylabel('value')
+        xlabel('data index')
 
         if  isfield(handles, 'ref')
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.ref.ForwardResult,'-ob')
-            plot(handles.ref.rDataRefNoise,'-*r')
-             
-            
-            legend('manual fitting', 'reference', 'noisy reference')
+            cla
+            semilogy(handles.ref.ForwardResult,'-ob')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ymax = max([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+            hf1 = semilogy(handles.ref.ForwardResult,'-ob');
+            hf2 = semilogy(handles.ref.rDataRefNoise,'-*r');
+            hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
+                'manual fitting'},'Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+         
         else
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.cont.ForwardResult+noise,'-*b')
-     
-            legend('manual fitting')
+            cla
+            semilogy(handles.cont.ForwardResult,'-oc')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min( handles.cont.ForwardResult);
+            ymax = max(handles.cont.ForwardResult);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend(hf3, 'manual fitting','Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+            hold off
+            
         end
         
     % --------------------- DISPLAY RESULT END ------------------%
@@ -1024,21 +1155,63 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
-            ylabel('value')
-    xlabel('data index')
+        ylabel('value')
+        xlabel('data index')
 
         if  isfield(handles, 'ref')
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.ref.ForwardResult,'-ob')
-            plot(handles.ref.rDataRefNoise,'-*r')
-             
-            
-            legend('manual fitting', 'reference', 'noisy reference')
+            cla
+            semilogy(handles.ref.ForwardResult,'-ob')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ymax = max([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+            hf1 = semilogy(handles.ref.ForwardResult,'-ob');
+            hf2 = semilogy(handles.ref.rDataRefNoise,'-*r');
+            hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
+                'manual fitting'},'Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+         
         else
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.cont.ForwardResult+noise,'-*b')
-     
-            legend('manual fitting')
+            cla
+            semilogy(handles.cont.ForwardResult,'-oc')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min( handles.cont.ForwardResult);
+            ymax = max(handles.cont.ForwardResult);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend(hf3, 'manual fitting','Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+            
+            hold off
         end
         
     % --------------------- DISPLAY RESULT END ------------------%
@@ -1260,25 +1433,67 @@ if get(handles.radiobuttonContForward,'Value') == 1
     end
 %---------------- plot Ultrasound Signal END ---------------------%
 
-    % --------------------- DISPLAY RESULT -----------------------%
+   % --------------------- DISPLAY RESULT -----------------------%
         axes(handles.axesForwardResult)
         cla
         hold on
-            ylabel('value')
-    xlabel('data index')
+        ylabel('value')
+        xlabel('data index')
 
         if  isfield(handles, 'ref')
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.ref.ForwardResult,'-ob')
-            plot(handles.ref.rDataRefNoise,'-*r')
-             
-            
-            legend('manual fitting', 'reference', 'noisy reference')
+            cla
+            semilogy(handles.ref.ForwardResult,'-ob')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ymax = max([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+            hf1 = semilogy(handles.ref.ForwardResult,'-ob');
+            hf2 = semilogy(handles.ref.rDataRefNoise,'-*r');
+            hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
+                'manual fitting'},'Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+         
         else
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.cont.ForwardResult+noise,'-*b')
-     
-            legend('manual fitting')
+            cla
+            semilogy(handles.cont.ForwardResult,'-oc')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min( handles.cont.ForwardResult);
+            ymax = max(handles.cont.ForwardResult);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend(hf3, 'manual fitting','Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+            
+            hold off
         end
       
     % --------------------- DISPLAY RESULT END ------------------%
@@ -1363,28 +1578,68 @@ if get(handles.radiobuttonContForward,'Value') == 1
         plot_ultra(handles.cont);
     end
 %---------------- plot Ultrasound Signal END ---------------------%
-
-    % --------------------- DISPLAY RESULT -----------------------%
+% --------------------- DISPLAY RESULT -----------------------%
         axes(handles.axesForwardResult)
         cla
         hold on
-            ylabel('value')
-    xlabel('data index')
+        ylabel('value')
+        xlabel('data index')
 
         if  isfield(handles, 'ref')
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.ref.ForwardResult,'-ob')
-            plot(handles.ref.rDataRefNoise,'-*r')
-             
-            
-            legend('manual fitting', 'reference', 'noisy reference')
+            cla
+            semilogy(handles.ref.ForwardResult,'-ob')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ymax = max([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+            hf1 = semilogy(handles.ref.ForwardResult,'-ob');
+            hf2 = semilogy(handles.ref.rDataRefNoise,'-*r');
+            hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
+                'manual fitting'},'Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+         
         else
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.cont.ForwardResult+noise,'-*b')
-     
-            legend('manual fitting')
+            cla
+            semilogy(handles.cont.ForwardResult,'-oc')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min( handles.cont.ForwardResult);
+            ymax = max(handles.cont.ForwardResult);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend(hf3, 'manual fitting','Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+            
+            hold off
         end
-      
     % --------------------- DISPLAY RESULT END ------------------%
 %%%%%%%%%%%%%%%%%%%%%%%  Continuous mode END %%%%%%%%%%%%%%%%%%%%%%% 
 end
@@ -1489,21 +1744,63 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
-            ylabel('value')
-    xlabel('data index')
+        ylabel('value')
+        xlabel('data index')
 
         if  isfield(handles, 'ref')
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.ref.ForwardResult,'-ob')
-            plot(handles.ref.rDataRefNoise,'-*r')
-             
-            
-            legend('manual fitting', 'reference', 'noisy reference')
+            cla
+            semilogy(handles.ref.ForwardResult,'-ob')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ymax = max([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+            hf1 = semilogy(handles.ref.ForwardResult,'-ob');
+            hf2 = semilogy(handles.ref.rDataRefNoise,'-*r');
+            hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
+                'manual fitting'},'Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+         
         else
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.cont.ForwardResult+noise,'-*b')
-     
-            legend('manual fitting')
+            cla
+            semilogy(handles.cont.ForwardResult,'-oc')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min( handles.cont.ForwardResult);
+            ymax = max(handles.cont.ForwardResult);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend(hf3, 'manual fitting','Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+            
+            hold off
         end
          
     % --------------------- DISPLAY RESULT END ------------------%
@@ -1606,25 +1903,67 @@ if get(handles.radiobuttonContForward,'Value') == 1
     % -----------------  Cont Forward End --------------------- %
     
 
-    % --------------------- DISPLAY RESULT -----------------------%
+   % --------------------- DISPLAY RESULT -----------------------%
         axes(handles.axesForwardResult)
         cla
         hold on
-            ylabel('value')
-    xlabel('data index')
+        ylabel('value')
+        xlabel('data index')
 
         if  isfield(handles, 'ref')
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.ref.ForwardResult,'-ob')
-            plot(handles.ref.rDataRefNoise,'-*r')
-             
-            
-            legend('manual fitting', 'reference', 'noisy reference')
+            cla
+            semilogy(handles.ref.ForwardResult,'-ob')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ymax = max([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+            hf1 = semilogy(handles.ref.ForwardResult,'-ob');
+            hf2 = semilogy(handles.ref.rDataRefNoise,'-*r');
+            hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
+                'manual fitting'},'Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+         
         else
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.cont.ForwardResult+noise,'-*b')
-     
-            legend('manual fitting')
+            cla
+            semilogy(handles.cont.ForwardResult,'-oc')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min( handles.cont.ForwardResult);
+            ymax = max(handles.cont.ForwardResult);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend(hf3, 'manual fitting','Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+            hold off
+            
         end
          
     % --------------------- DISPLAY RESULT END ------------------%
@@ -1939,6 +2278,8 @@ set(handles.radiobuttonPlotUltraSignal,'Enable','on');
         set(handles.editWavFrom, 'Enable','Off');
         set(handles.editWavTo, 'Enable','Off');
         set(handles.editWavStep, 'Enable','Off');
+        
+        set(handles.sliderWav, 'Enable','On');
 switch mode
     case 'Forward Simulation'
         set(handles.textContDis1,'Visible','Off');
@@ -1991,25 +2332,69 @@ switch mode
     % -----------------  Cont Forward End --------------------- %
     
 
-    % --------------------- DISPLAY RESULT -----------------------%
+   % --------------------- DISPLAY RESULT -----------------------%
         axes(handles.axesForwardResult)
         cla
         hold on
-            ylabel('value')
-    xlabel('data index')
+        ylabel('value')
+        xlabel('data index')
 
         if  isfield(handles, 'ref')
-            plot(handles.cont.ForwardResult,'-oc')
-            plot(handles.ref.ForwardResult,'-ob')
-            plot(handles.ref.rDataRefNoise,'-*r')
-            legend('manual fitting', 'reference', 'noisy reference')
+            cla
+            semilogy(handles.ref.ForwardResult,'-ob')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ymax = max([handles.ref.ForwardResult handles.ref.rDataRefNoise...
+                handles.cont.ForwardResult]);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+            hf1 = semilogy(handles.ref.ForwardResult,'-ob');
+            hf2 = semilogy(handles.ref.rDataRefNoise,'-*r');
+            hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
+                'manual fitting'},'Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+         
         else
-            plot(handles.cont.ForwardResult,'-oc')
-            %plot(handles.cont.ForwardResult+noise,'-*r')
-     
-            legend('manual fitting')
+            cla
+            semilogy(handles.cont.ForwardResult,'-oc')
+            hold on
+            nn = length(handles.wavList);
+            numLasers = handles.numLasers;
+            COLORs=hsv(numLasers);
+            xlim([0 nn*numLasers])
+            ymin = min( handles.cont.ForwardResult);
+            ymax = max(handles.cont.ForwardResult);
+            ylim([ymin ymax]);
+            for ii = 1:numLasers
+                patch([ nn*(ii-1)   nn*(ii-1)...
+                    nn*ii nn*ii], [ymin ymax ymax ymin],...
+                    COLORs(ii,:),'FaceAlpha' ,0.03)
+                text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
+                    ['position ' num2str(ii)],...
+    'HorizontalAlignment','center','Color','k')
+            end
+             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
+            legend(hf3, 'manual fitting','Location','northeastoutside')
+            ylabel('value')
+            xlabel('data index')
+            
+            
         end
-        
+        hold off
   % ------------------  DISPLAY RESULT END ---------------------%
   
    % ----------------- plot fluence START ------------------%
@@ -2028,6 +2413,7 @@ switch mode
     case 'Reconstruction'
         set(handles.radiobuttonPlotFluence,'Enable','off');
         set(handles.radiobuttonPlotUltraSignal,'Enable','off');
+        set(handles.sliderWav, 'Enable','Off');
 end
 guidata(hObject, handles);
 
@@ -2516,7 +2902,7 @@ appdata.lastValidTag = 'axesFluenceEq';
 h28_2 = axes(...
 'Parent',h33,...
 'Units','pixels',...
-'Position', r.*  [20  228 100 18],...%r.*  [35 35 225 185],...
+'Position', r.*  [20  225 50 10],...%r.*  [35 35 225 185],...
 'CameraPosition',[0.5 0.5 9.16025403784439],...
 'CameraPositionMode',get(0,'defaultaxesCameraPositionMode'),...
 'Color',get(0,'defaultaxesColor'),...
@@ -2647,8 +3033,8 @@ appdata.lastValidTag = 'text25';
 h46 = uicontrol(...
 'Parent',h45,...
 'Units','pixels',...
-'Position', r.*  [350 500 200 30],...
-'String',{'Reconstruction Result 2:';'All parameters        '},...
+'Position', r.*  [450 500 200 30],...
+'String',{'Reconstruction Result:';'for Other parameters   '},...
 'Style','text',...
 'Tag','text25',...
 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
@@ -2661,8 +3047,9 @@ h47 = uicontrol(...
 'Parent',h45,...
 'Units','pixels',...
 'CData',[],...
-'Position', r.*  [30 500  250 30],...
-'String',{'Reconstruction Resul 1:   '; 'StO for blood vessel and bulk'},...
+'Position', r.*  [50 500  250 30],...
+'String',{'Reconstruction Result:                     '; ...
+          'Oxygen saturation of  blood vessel and bulk'},...
 'Style','text',...
 'UserData',[],...
 'Tag','text24',...
@@ -2675,7 +3062,7 @@ appdata.lastValidTag = 'axesRecStOBulk';
 h48 = axes(...
 'Parent',h45,...
 'Units','pixels',...
-'Position', r.*  [190 50 60 420],...
+'Position', r.*  [270 50 150 420],...
 'CameraPosition',[0.5 0.5 9.16025403784439],...
 'CameraPositionMode',get(0,'defaultaxesCameraPositionMode'),...
 'Color',get(0,'defaultaxesColor'),...
@@ -2694,7 +3081,7 @@ appdata.lastValidTag = 'axesRecStO';
 h53 = axes(...
 'Parent',h45,...
 'Units','pixels',...
-'Position', r.*  [70 50 60 420],...
+'Position', r.*  [70 50 150 420],...
 'CameraPosition',[0.5 0.5 9.16025403784439],...
 'CameraPositionMode',get(0,'defaultaxesCameraPositionMode'),...
 'Color',get(0,'defaultaxesColor'),...
@@ -2713,7 +3100,7 @@ appdata.lastValidTag = 'axesRecResult';
 h58 = axes(...
 'Parent',h45,...
 'Units','pixels',...
-'Position', r.*  [320 50  370 420],...
+'Position', r.*  [450 50  230 420],...
 'CameraPosition',[0.5 0.5 9.16025403784439],...
 'CameraPositionMode',get(0,'defaultaxesCameraPositionMode'),...
 'Color',get(0,'defaultaxesColor'),...
@@ -3598,7 +3985,7 @@ h118 = uicontrol(...
 'Units','pixels',...
 'Callback',@(hObject,eventdata)GUI_main('radiobuttonPlotMuaC_Callback',hObject,eventdata,guidata(hObject)),...
 'Position', r.*  [22.5 100 150 20],...
-'String','plot spectra of coefficients ',...
+'String','plot spectra of chromophores ',...
 'Style','radiobutton',...
 'Tag','radiobuttonPlotMuaC',...
 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
