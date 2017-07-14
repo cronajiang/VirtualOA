@@ -289,12 +289,13 @@ if get(handles.radiobuttonSingleForward,'Value') == 1
         text(mean([nn*(ii-1) nn*ii]),mean([ymax ymin]),2,...
                     ['position ' num2str(ii)],...
     'HorizontalAlignment','center','Color','k')
+
     end
     hf1 = semilogy(handles.ref.ForwardResult,'-ob');
     hf2 = semilogy(handles.ref.rDataRefNoise,'-*r');
     legend([hf1, hf2], {'reference signal','noisy reference'},...
         'Location','northeastoutside')
-    ylabel('value')
+    ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
     xlabel('data index')
       hold off 
     % ------------------  DISPLAY RESULT END ---------------------%
@@ -397,7 +398,7 @@ elseif get(handles.radiobuttonContForward,'Value') == 1
             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
                 'manual fitting'},'Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
          
         else
@@ -421,7 +422,7 @@ elseif get(handles.radiobuttonContForward,'Value') == 1
             end
              hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend(hf3, 'manual fitting','Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
             
              hold off
@@ -520,7 +521,7 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
       Labels = {'a*C_{HHb, bulk}', 'a*C_{OHb, bulk}', 'a*C_{H2O, bulk}', ...
           'a*C_{Lipid, bulk}', 'b'};
       set(gca, 'XTick', [1:5], 'XTickLabel', Labels);
-      ylabel('value')
+      ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
       xlabel('parameters')
       hold off
        
@@ -577,9 +578,9 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
             COLORs=hsv(numLasers);
             xlim([0 nn*numLasers])
             ymin = min([handles.ref.ForwardResult handles.ref.rDataRefNoise...
-                handles.cont.ForwardResult]);
+                handles.init.RatioResult handles.rec.RatioResult]);
             ymax = max([handles.ref.ForwardResult handles.ref.rDataRefNoise...
-                handles.cont.ForwardResult]);
+                handles.init.RatioResult handles.rec.RatioResult]);
             ylim([ymin ymax]);
             for ii = 1:numLasers
                 patch([ nn*(ii-1)   nn*(ii-1)...
@@ -597,7 +598,7 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
        legend([hf1 hf2 hf3 hf4],...
            {'initial', 'reference', 'noisy reference', 'reconstructed'},...   
              'Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
             hold off
     % ---------------- DISPLAY RECONSTRUCTION RESULT END---------%
@@ -700,7 +701,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
-        ylabel('value')
+        ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
         xlabel('data index')
 
         if  isfield(handles, 'ref')
@@ -729,7 +730,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
                 'manual fitting'},'Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
          
         else
@@ -753,7 +754,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             end
              hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend(hf3, 'manual fitting','Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
             hold off
             
@@ -1006,7 +1007,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
-        ylabel('value')
+        ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
         xlabel('data index')
 
         if  isfield(handles, 'ref')
@@ -1035,7 +1036,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
                 'manual fitting'},'Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
          
         else
@@ -1059,7 +1060,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             end
              hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend(hf3, 'manual fitting','Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
             hold off
             
@@ -1155,7 +1156,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
-        ylabel('value')
+        ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
         xlabel('data index')
 
         if  isfield(handles, 'ref')
@@ -1184,7 +1185,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
                 'manual fitting'},'Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
          
         else
@@ -1208,7 +1209,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             end
              hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend(hf3, 'manual fitting','Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
             
             hold off
@@ -1437,7 +1438,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
-        ylabel('value')
+        ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
         xlabel('data index')
 
         if  isfield(handles, 'ref')
@@ -1466,7 +1467,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
                 'manual fitting'},'Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
          
         else
@@ -1490,7 +1491,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             end
              hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend(hf3, 'manual fitting','Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
             
             hold off
@@ -1582,7 +1583,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
-        ylabel('value')
+        ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
         xlabel('data index')
 
         if  isfield(handles, 'ref')
@@ -1611,7 +1612,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
                 'manual fitting'},'Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
          
         else
@@ -1635,7 +1636,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             end
              hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend(hf3, 'manual fitting','Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
             
             hold off
@@ -1744,7 +1745,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
-        ylabel('value')
+        ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
         xlabel('data index')
 
         if  isfield(handles, 'ref')
@@ -1773,7 +1774,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
                 'manual fitting'},'Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
          
         else
@@ -1797,7 +1798,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             end
              hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend(hf3, 'manual fitting','Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
             
             hold off
@@ -1907,7 +1908,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
         axes(handles.axesForwardResult)
         cla
         hold on
-        ylabel('value')
+        ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
         xlabel('data index')
 
         if  isfield(handles, 'ref')
@@ -1936,7 +1937,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
                 'manual fitting'},'Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
          
         else
@@ -1960,7 +1961,7 @@ if get(handles.radiobuttonContForward,'Value') == 1
             end
              hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend(hf3, 'manual fitting','Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
             hold off
             
@@ -2336,7 +2337,7 @@ switch mode
         axes(handles.axesForwardResult)
         cla
         hold on
-        ylabel('value')
+        ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
         xlabel('data index')
 
         if  isfield(handles, 'ref')
@@ -2365,7 +2366,7 @@ switch mode
             hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend([hf1, hf2, hf3], {'reference signal','noisy reference',...
                 'manual fitting'},'Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
          
         else
@@ -2389,7 +2390,7 @@ switch mode
             end
              hf3 = semilogy(handles.cont.ForwardResult,'-oc');
             legend(hf3, 'manual fitting','Location','northeastoutside')
-            ylabel('value')
+            ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
             xlabel('data index')
             
             
@@ -2560,7 +2561,7 @@ h1 = figure(...
 'IntegerHandle','off',...
 'InvertHardcopy',get(0,'defaultfigureInvertHardcopy'),...
 'MenuBar','none',...
-'Name','VirtualOA: a virtual lab of optoacoustic imaging',...
+'Name','VirtualOA: toolbox for a virtual lab of optoacoustic imaging',...
 'NumberTitle','off',...
 'PaperPosition',get(0,'defaultfigurePaperPosition'),...
 'Position', r.*  [33 59 1300 650],...
@@ -3034,7 +3035,7 @@ h46 = uicontrol(...
 'Parent',h45,...
 'Units','pixels',...
 'Position', r.*  [450 500 200 30],...
-'String',{'Reconstruction Result:';'for Other parameters   '},...
+'String',{'Reconstruction result:';'other parameters     '},...
 'Style','text',...
 'Tag','text25',...
 'CreateFcn', {@local_CreateFcn, blanks(0), appdata} );
@@ -3049,7 +3050,7 @@ h47 = uicontrol(...
 'CData',[],...
 'Position', r.*  [50 500  250 30],...
 'String',{'Reconstruction Result:                     '; ...
-          'Oxygen saturation of  blood vessel and bulk'},...
+          'oxygen saturation of  blood vessel and bulk'},...
 'Style','text',...
 'UserData',[],...
 'Tag','text24',...

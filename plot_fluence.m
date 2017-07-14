@@ -183,64 +183,54 @@ if isfield(paras, 'isSliderWav')
     if paras.IsSound 
         Vol =  exp(A/2);
         for ii = 1:3
-        
-        
-        
-%        set(paras.axesFluence,'visible','off')
-       %%%%%%%%%%%  remove plot %%%%%%%%%%%%
-           cla
-hold on
-%title('fluence field for laser 1')
-% set(gca,'Ydir','reverse')
-% xlabel('rho [mm]')
-% ylabel('z [mm]')
-
-surf(X,Y,low_F*ones(size(X)));
-shading interp;
-
-axis([-45, 45, 0, 60, low, high]);
- view(0, 90);
- colormap(hot);
- 
-caxis([low high])
+%         
+%         
+%         
+% %        set(paras.axesFluence,'visible','off')
+%        %%%%%%%%%%%  remove plot %%%%%%%%%%%%
+%            cla
+% hold on
+% %title('fluence field for laser 1')
+% % set(gca,'Ydir','reverse')
+% % xlabel('rho [mm]')
+% % ylabel('z [mm]')
+% 
+% surf(X,Y,low_F*ones(size(X)));
+% shading interp;
+% 
+% axis([-45, 45, 0, 60, low, high]);
+%  view(0, 90);
+%  colormap(hot);
+%  
+% caxis([low high])
 
 generate_sound(Vol);
-plot3(vessel.r,vessel.z,high, 'Marker', 'o','MarkerSize',10,...
-    'MarkerFaceColor', vesselColor, 'MarkerEdgeColor', 'r')
-drawnow;
+% plot3(vessel.r,vessel.z,high, 'Marker', 'o','MarkerSize',10,...
+%     'MarkerFaceColor', vesselColor, 'MarkerEdgeColor', 'r')
+% drawnow;
 
        %%%%%%%%%% remove plot end %%%%%%%%%%
-     
-%         pause(0.01)
        
-%        set(paras.axesFluence,'visible','on') 
     %%%%%%%%%%%%% plot again %%%%%%%%%%%
-    cla
-hold on
-%title('fluence field for laser 1')
-% set(gca,'Ydir','reverse')
-% xlabel('rho [mm]')
-% ylabel('z [mm]')
-
-% low =low_F ;
-% high =high_F + 2;
- 
-surf(X,Y,F);
-shading interp;
-
-axis([-45, 45, 0, 60, low, high]);
- 
- view(0, 90);
- colormap(hot);
- 
-caxis([low high])
-
-
-plot3(vessel.r,vessel.z,high, 'Marker', 'o','MarkerSize',10,...
-    'MarkerFaceColor', vesselColor, 'MarkerEdgeColor', 'r')
-drawnow;
+%     cla
+% hold on
+%  
+% surf(X,Y,F);
+% shading interp;
+% 
+% axis([-45, 45, 0, 60, low, high]);
+%  
+%  view(0, 90);
+%  colormap(hot);
+%  
+% caxis([low high])
+% 
+% 
+% plot3(vessel.r,vessel.z,high, 'Marker', 'o','MarkerSize',10,...
+%     'MarkerFaceColor', vesselColor, 'MarkerEdgeColor', 'r')
+% drawnow;
 %%%%%%%%%%%%%%%%%%% plot again end %%%%%%%%%%%%
-%        pause(0.02)
+%        pause(0.01)
        
        
         end
@@ -265,5 +255,5 @@ function generate_sound(A)
  
     player = audioplayer(Y ,8192);
     play(player);
- pause(0.02)
+ pause(0.01)
 end
