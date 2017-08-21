@@ -6,4 +6,6 @@ Run GUI_main.m in MATLAB environment.
 
 ## CROSS-PLATFORM COMPATIBILITY
 This program has been so far tested successfully in different Operating Systems including windows 7 and OS X. In order to show the UI properly, the font size should be set ’100%’ or ’Default’ for the OS. The earliest MATLAB version tested so far is MATLAB 2013b.
+
+The GUI is designed to be self-explained, but detailed documentation will come soon ...
  
