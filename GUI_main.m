@@ -521,7 +521,7 @@ elseif  get(handles.radiobuttonRec,'Value') == 1
       Labels = {'a*C_{HHb, bulk}', 'a*C_{OHb, bulk}', 'a*C_{H2O, bulk}', ...
           'a*C_{Lipid, bulk}', 'b'};
       set(gca, 'XTick', [1:5], 'XTickLabel', Labels);
-      ylabel('  \Delta P(\lambda_i) / \Delta P(\lambda_0)')
+      ylabel('Value')
       xlabel('parameters')
       hold off
        
