@@ -127,8 +127,8 @@ el = 90;
 caxis([low high])
 hCB = findobj(paras.uiPanel, 'tag', 'Colorbar');% avoid overlap of colorbars
 delete(hCB);
-h = colorbar('Parent',paras.uiPanel,'Position', [0.85 0.16 0.0401 0.72]);
-set(h, 'ylim', [low high])
+%h = colorbar('Parent',paras.uiPanel,'Position', [0.85 0.16 0.0401 0.72]);
+%set(h, 'ylim', [low high])
  
 % calculate the product  
 H = A_green* G(vessel.z + 1, vessel.r + 46) * mua_vessel;
