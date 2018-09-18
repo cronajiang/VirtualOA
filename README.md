@@ -25,7 +25,7 @@ In the Single Forward mode, by clicking the radio button plot spectra of coeffic
 will be shown in the third display panel Spectra of coefficients.
 ### PLOT FLUENCE
 In the Single Forward mode, by clicking the radio button plot fluence, the result will be dis- played in the button left of the panel Forward result. The signal of ultrasound for probe 1 is shown in the terms of the product of absorption of the blood vessel and the fluence calculated by Green function.
-### PLOT ULTRASOUND SIGNAL level
+### PLOT ULTRASOUND SIGNAL LEVEL
 In the Single Forward mode, by clicking the radio button plot ultrasound signal, spectra of intensities of signals gathered from all probes will be shown on the top right axes of the display panel Forward result.
 
 ## CROSS-PLATFORM COMPATIBILITY
